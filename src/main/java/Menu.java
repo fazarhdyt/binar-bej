@@ -109,7 +109,7 @@ public class Menu {
                 if(item == null){
                     break;
                 }
-                bw.write(item.getProduct().getProductName() + "\t\t" + item.getQty() + "\t" + rupiah.format(item.getTotalPrice())+"\n");
+                bw.write(item.getProduct().getProductName() + "\t" + item.getQty() + "\t" + rupiah.format(item.getTotalPrice())+"\n");
                 totalQty += item.getQty();
                 grandPrice += item.getTotalPrice();
             }
