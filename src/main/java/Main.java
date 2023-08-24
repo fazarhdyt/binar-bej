@@ -26,6 +26,7 @@ public class Main {
                     choose = Integer.parseInt(Validation.inputUser("=> ", "masukkan hanya dengan angka 0-2", regexMenuConfirmAndPayment));
                     if (choose == 1) {
                         Menu.generateReceipt(listCartItems, "Warkop Top Global");
+                        isLooping = false;
                     } else if (choose == 2) {
 //                        Menu.printMenu(listAllProduct, "Welcome to Warkop Top Global");
                         break;

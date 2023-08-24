@@ -70,7 +70,7 @@ public class Menu {
             if(item == null){
                 break;
             }
-            System.out.printf("| %-16s | %-2s | %-14s |%n", item.getProduct().getProductName(), item.getQty(), rupiah.format(item.getProduct().getPrice()));
+            System.out.printf("| %-16s | %-2s | %-14s |%n", item.getProduct().getProductName(), item.getQty(), rupiah.format(item.getTotalPrice()));
             totalQty += item.getQty();
             grandPrice += item.getTotalPrice();
         }
@@ -91,11 +91,14 @@ public class Menu {
     public static void generateReceipt(CartItem[] cartItems, String title){
         Locale localeId = new Locale("in", "ID");
         NumberFormat rupiah = NumberFormat.getCurrencyInstance(localeId);
+        String spacing = "| %-24s | %-4s | %-14s |%n";
         try {
+            double grandPrice = 0;
+            int totalQty = 0;
             FileWriter fw = new FileWriter("C:/Users/Fazar/Documents/Binar/Challenge/StoreFazar/out/production/StoreFazar/receipt.txt");
             BufferedWriter bw = new BufferedWriter(fw);
-            String border = "===================================================\n";
-            String border2 = "--------------------------------------------------\n";
+            String border = "=====================================\n";
+            String border2 = "-----------------------------------+\n";
 
             bw.write(border);
             bw.write( "\t\t" +title+"\n");
@@ -106,9 +109,12 @@ public class Menu {
                 if(item == null){
                     break;
                 }
-                bw.write(item.getProduct().getProductName() + "\t" + item.getQty() + "\t" + rupiah.format(item.getTotalPrice())+"\n");
+                bw.write(item.getProduct().getProductName() + "\t\t" + item.getQty() + "\t" + rupiah.format(item.getTotalPrice())+"\n");
+                totalQty += item.getQty();
+                grandPrice += item.getTotalPrice();
             }
             bw.write(border2);
+            bw.write("Total:\t\t\t" + totalQty + "\t" + rupiah.format(grandPrice) + "\n\n");
             bw.write("\nPembayaran: Tunai\n\n");
             bw.write(border);
             bw.write("Simpan struk ini sebagai\nbukti pembayaran\n");
