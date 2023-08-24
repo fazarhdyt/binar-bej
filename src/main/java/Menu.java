@@ -114,7 +114,7 @@ public class Menu {
                 grandPrice += item.getTotalPrice();
             }
             bw.write(border2);
-            bw.write("Total:\t\t\t" + totalQty + "\t" + rupiah.format(grandPrice) + "\n\n");
+            bw.write("Total:\t\t" + totalQty + "\t" + rupiah.format(grandPrice) + "\n\n");
             bw.write("\nPembayaran: Tunai\n\n");
             bw.write(border);
             bw.write("Simpan struk ini sebagai\nbukti pembayaran\n");
