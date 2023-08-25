@@ -35,6 +35,7 @@ public class ShopService {
             for (CartItem cartItem : cartItems) {
                 if (cartItem.getProduct().equals(product)) {
                     cartItem.setQty(cartItem.getQty() + qty);
+                    cartItem.setTotalPrice();
                     break;
                 }
             }
