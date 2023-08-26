@@ -7,6 +7,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.Locale;
 
 public class Menu {
@@ -15,7 +16,7 @@ public class Menu {
      * @param products
      * @param title
      */
-    public static void printMenu(Product[] products, String title) {
+    public static void printMenu(List<Product> products, String title) {
         Locale localeId = new Locale("in", "ID");
         NumberFormat rupiah = NumberFormat.getCurrencyInstance(localeId);
         String spacing = "| %-4s | %-24s | %-14s |%n";
@@ -57,7 +58,7 @@ public class Menu {
      * method ini digunakan untuk mencetak tampilan dari menu konfirmasi dan bayar
      * @param cartItems
      */
-    public static void printConfirmAndPayment(CartItem[] cartItems) {
+    public static void printConfirmAndPayment(List<CartItem> cartItems) {
         Locale localeId = new Locale("in", "ID");
         NumberFormat rupiah = NumberFormat.getCurrencyInstance(localeId);
         int totalQty=0;
@@ -88,7 +89,7 @@ public class Menu {
      * @param cartItems
      * @param title
      */
-    public static void generateReceipt(CartItem[] cartItems, String title){
+    public static void generateReceipt(List<CartItem> cartItems, String title){
         Locale localeId = new Locale("in", "ID");
         NumberFormat rupiah = NumberFormat.getCurrencyInstance(localeId);
         String spacing = "| %-24s | %-4s | %-14s |%n";

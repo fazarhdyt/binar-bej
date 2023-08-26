@@ -3,14 +3,20 @@ package main.java.service;
 import main.java.model.CartItem;
 import main.java.model.Product;
 
+import java.util.List;
+
 public class ShopService {
+
+    private ShopService(){
+        throw new IllegalStateException("ShopService");
+    }
     /**
      * function ini digunakan untuk mengambil makanan atau minuman berdasarkan id yang diinput user
      * @param products
      * @param id
      * @return
      */
-    public static Product getProductById(Product[] products, int id) {
+    public static Product getProductById(List<Product> products, int id) {
         Product result = null;
         for (Product product : products) {
             if (product.getId() == id) {
@@ -27,11 +33,10 @@ public class ShopService {
      * @param product
      * @param qty
      */
-    public static void addToCartShop(CartItem[] cartItems, Product product, int qty) {
+    public static void addToCartShop(List<CartItem> cartItems, Product product, int qty) {
         CartItem item = null;
         boolean findItem = checkItem(cartItems, product);
         if(findItem){
-            item = getCartItem(cartItems, product);
             for (CartItem cartItem : cartItems) {
                 if (cartItem.getProduct().equals(product)) {
                     cartItem.setQty(cartItem.getQty() + qty);
@@ -41,30 +46,25 @@ public class ShopService {
             }
         } else {
             item = new CartItem(product, qty);
-            for(int i = 0; i < cartItems.length; i++){
-                if(cartItems[i] == null){
-                    cartItems[i] = item;
-                    break;
-                }
-            }
+            cartItems.add(item);
         }
     }
 
-    public static CartItem getCartItem(CartItem[] cartItems, Product product) {
+    public static CartItem getCartItem(List<CartItem> cartItems, Product product) {
         for (CartItem item : cartItems) {
-            if (item.getProduct().getId() == (product.getId())) {
+            if (item.getProduct().getId() == product.getId()) {
                 return item;
             }
         }
         return null;
     }
 
-    public static boolean checkItem(CartItem[] cartItems, Product product) {
+    public static boolean checkItem(List<CartItem> cartItems, Product product) {
         for (CartItem item : cartItems) {
             if(item == null){
                 return false;
             }
-            if (item.getProduct().getId() == (product.getId())) {
+            if (item.getProduct().getId() == product.getId()) {
                 return true;
             }
         }

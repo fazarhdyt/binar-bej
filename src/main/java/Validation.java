@@ -2,9 +2,14 @@ package main.java;
 
 import main.java.model.Product;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class Validation {
+
+    private Validation(){
+        throw new IllegalStateException("Validation");
+    }
     /**
      * method ini digunakan untuk memvalidasi input user dengan regex yang ditentukan
      * @param inputUser
@@ -44,10 +49,10 @@ public class Validation {
      * @param id
      * @return
      */
-    public static boolean checkAvailabilityOrderId(Product[] products, int id) {
+    public static boolean checkAvailabilityOrderId(List<Product> products, int id) {
         boolean result = false;
-        for(int i=0; i<products.length; i++){
-            if(i+1 == id){
+        for (Product product: products) {
+            if(product.getId() == id){
                 result = true;
             }
         }
@@ -59,7 +64,7 @@ public class Validation {
      * @param products
      * @return
      */
-    public static int inputOrder(Product[] products) {
+    public static int inputOrder(List<Product> products) {
         String regexNumeric = "^[0-9]+$";
         boolean isLooping = true;
         int inputOrderId;

@@ -5,14 +5,19 @@ import main.java.model.Product;
 import main.java.repository.ProductRepository;
 import main.java.service.ShopService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
-        Product[] listProducts = ProductRepository.getProducts();
-        CartItem[] listCartItems = new CartItem[listProducts.length];
+        List<Product> listProducts = ProductRepository.getProducts();
+        List<CartItem> listCartItems = new ArrayList<>();
 
-        int choose, qty;
+        int choose;
+        int qty;
         boolean isLooping = true;
-        String regexNumeric = "[0-9]+", regexMenuConfirmAndPayment = "^[0-2]$";
+        String regexNumeric = "[0-9]+";
+        String regexMenuConfirmAndPayment = "^[0-2]$";
 
         do {
             Menu.printMenu(listProducts, "Selamat datang di Warkop Top Global");
@@ -28,7 +33,6 @@ public class Main {
                         Menu.generateReceipt(listCartItems, "Warkop Top Global");
                         isLooping = false;
                     } else if (choose == 2) {
-//                        Menu.printMenu(listAllProduct, "Welcome to Warkop Top Global");
                         break;
                     } else if (choose == 0) {
                         System.exit(0);
