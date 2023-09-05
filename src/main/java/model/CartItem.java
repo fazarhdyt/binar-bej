@@ -19,7 +19,7 @@ public class CartItem {
         this.setTotalPrice();
     }
 
-    public void setTotalPrice(){
+    public void setTotalPrice() {
         this.totalPrice = product.getPrice() * qty;
     }
 }

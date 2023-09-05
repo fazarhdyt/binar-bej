@@ -1,33 +1,33 @@
-package main.java;
+package main.java.service.impl;
 
 import main.java.model.Product;
+import main.java.service.IValidationService;
 
 import java.util.List;
 import java.util.Scanner;
 
-public class Validation {
+public class ValidationService implements IValidationService {
 
-    private Validation(){
-        throw new IllegalStateException("Validation");
-    }
     /**
      * method ini digunakan untuk memvalidasi input user dengan regex yang ditentukan
+     *
      * @param inputUser
      * @param regex
      * @return
      */
-    public static boolean inputValidation(String inputUser, String regex) {
+    public boolean inputValidation(String inputUser, String regex) {
         return inputUser.matches(regex);
     }
 
     /**
-     * method ini digunakan untuk mengambil input user yang di dalamnya sudah tersedia funcion validasi untuk input usernya
+     * method ini digunakan untuk mengambil input user yang di dalamnya sudah tersedia method validasi untuk input usernya
+     *
      * @param question
      * @param errorMessage
      * @param regex
      * @return
      */
-    public static String inputUser(String question, String errorMessage, String regex) {
+    public String inputUser(String question, String errorMessage, String regex) {
         Scanner input = new Scanner(System.in);
         String result;
         boolean isLooping = true;
@@ -45,14 +45,15 @@ public class Validation {
 
     /**
      * method ini digunakan untuk mengecek id suatu makanan atau minuman yang diinput user tersedia atau tidak
+     *
      * @param products
      * @param id
      * @return
      */
-    public static boolean checkAvailabilityOrderId(List<Product> products, int id) {
+    public boolean checkAvailabilityOrderId(List<Product> products, int id) {
         boolean result = false;
-        for (Product product: products) {
-            if(product.getId() == id){
+        for (Product product : products) {
+            if (product.getId() == id) {
                 result = true;
             }
         }
@@ -61,16 +62,17 @@ public class Validation {
 
     /**
      * method ini digunakan untuk mengambil input id dari makanan atau minuman yang akan dipesan
+     *
      * @param products
      * @return
      */
-    public static int inputOrder(List<Product> products) {
+    public int inputOrder(List<Product> products) {
         String regexNumeric = "^[0-9]+$";
         boolean isLooping = true;
         int inputOrderId;
         do {
-            inputOrderId = Integer.parseInt(inputUser("=> ", "masukkan hanya dengan angka", regexNumeric));
-            if (inputOrderId == 0 || inputOrderId == 99 || inputOrderId == 90) {
+            inputOrderId = Integer.parseInt(inputUser("=> ", "masukkan hanya dengan angka positif", regexNumeric));
+            if (inputOrderId == 0 || inputOrderId == 99) {
                 return inputOrderId;
             }
             boolean isValid = checkAvailabilityOrderId(products, inputOrderId);

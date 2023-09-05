@@ -6,14 +6,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ProductRepository {
-    private ProductRepository(){
-        throw new IllegalStateException("Product Repository");
-    }
+
     /**
      * method yang digunakan untuk mengambil semua data makanan dan minuman yang ada di repository
+     *
      * @return
      */
-    public static List<Product> getProducts(){
+    public static List<Product> getProducts() {
         List<Product> listProducts;
 
         Product food1 = new Product(1, "Mie Goreng", 7000);
@@ -26,7 +25,7 @@ public class ProductRepository {
         Product beverage4 = new Product(8, "Kopi Hitam", 4000);
 
         listProducts = Arrays.asList(food1, food2, food3, food4, beverage1, beverage2, beverage3, beverage4);
-        return  listProducts;
+        return listProducts;
     }
 
 }

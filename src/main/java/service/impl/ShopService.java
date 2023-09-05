@@ -1,22 +1,21 @@
-package main.java.service;
+package main.java.service.impl;
 
 import main.java.model.CartItem;
 import main.java.model.Product;
+import main.java.service.IShopService;
 
 import java.util.List;
 
-public class ShopService {
+public class ShopService implements IShopService {
 
-    private ShopService(){
-        throw new IllegalStateException("ShopService");
-    }
     /**
-     * function ini digunakan untuk mengambil makanan atau minuman berdasarkan id yang diinput user
+     * method ini digunakan untuk mengambil makanan atau minuman berdasarkan id yang diinput user
+     *
      * @param products
      * @param id
      * @return
      */
-    public static Product getProductById(List<Product> products, int id) {
+    public Product getProductById(List<Product> products, int id) {
         Product result = null;
         for (Product product : products) {
             if (product.getId() == id) {
@@ -28,15 +27,16 @@ public class ShopService {
     }
 
     /**
-     * function ini digunakan untuk menambahkan makanan dan minuman ke keranjang (cart shop)
+     * method ini digunakan untuk menambahkan makanan dan minuman ke keranjang (cart shop)
+     *
      * @param cartItems
      * @param product
      * @param qty
      */
-    public static void addToCartShop(List<CartItem> cartItems, Product product, int qty) {
+    public void addToCartShop(List<CartItem> cartItems, Product product, int qty) {
         CartItem item = null;
         boolean findItem = checkItem(cartItems, product);
-        if(findItem){
+        if (findItem) {
             for (CartItem cartItem : cartItems) {
                 if (cartItem.getProduct().equals(product)) {
                     cartItem.setQty(cartItem.getQty() + qty);
@@ -50,24 +50,20 @@ public class ShopService {
         }
     }
 
-    public static CartItem getCartItem(List<CartItem> cartItems, Product product) {
+    /**
+     * method ini digunakan untuk mengecek apakah menu yang akan dipesan sudah ada di dalam keranjang atau belum
+     *
+     * @param cartItems
+     * @param product
+     * @return
+     */
+    public boolean checkItem(List<CartItem> cartItems, Product product) {
         for (CartItem item : cartItems) {
-            if (item.getProduct().getId() == product.getId()) {
-                return item;
-            }
-        }
-        return null;
-    }
-
-    public static boolean checkItem(List<CartItem> cartItems, Product product) {
-        for (CartItem item : cartItems) {
-            if(item == null){
-                return false;
-            }
             if (item.getProduct().getId() == product.getId()) {
                 return true;
             }
         }
         return false;
     }
+
 }
