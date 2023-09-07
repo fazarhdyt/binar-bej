@@ -32,8 +32,14 @@ public class MainMenuView {
 
     public void runApp() {
         do {
-            menuService.printMenu(listProducts, "Selamat datang di Warkop Top Global");
-            choose = validationService.inputOrder(listProducts);
+            try {
+                menuService.printMenu(listProducts, "Selamat datang di Warkop Top Global");
+                choose = validationService.inputOrder(listProducts);
+            } catch (NumberFormatException nfe) {
+                System.err.println("Error: " + nfe.getMessage());
+                System.err.println("Masukkan dengan angka tidak melebihi batas integer!");
+                continue;
+            }
             switch (choose) {
                 case 0:
                     System.exit(0);
@@ -56,12 +62,18 @@ public class MainMenuView {
                     }
                     break;
                 default:
-                    Product product = shopService.getProductById(listProducts, choose);
-                    menuService.printConfirmOrder(product);
-                    qty = Integer.parseInt(validationService.inputUser("qty => ", "masukkan hanya dengan angka positif", regexNumeric));
-                    if (qty != 0) {
-                        shopService.addToCartShop(listCartItems, product, qty);
+                    try {
+                        Product product = shopService.getProductById(listProducts, choose);
+                        menuService.printConfirmOrder(product);
+                        qty = Integer.parseInt(validationService.inputUser("qty => ", "masukkan hanya dengan angka positif", regexNumeric));
+                        if (qty != 0) {
+                            shopService.addToCartShop(listCartItems, product, qty);
+                        }
+                    } catch (NumberFormatException nfe) {
+                        System.err.println("Error: " + nfe.getMessage());
+                        System.err.println("Masukkan dengan angka tidak melebihi batas integer!");
                     }
+
             }
         } while (isLooping);
     }

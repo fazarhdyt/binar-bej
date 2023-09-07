@@ -23,6 +23,7 @@ public class MenuService implements IMenuService {
         NumberFormat rupiah = NumberFormat.getCurrencyInstance(localeId);
         String spacing = "| %-4s | %-24s | %-14s |%n";
         String border = "+--------------------------------------------------+%n";
+        System.out.printf("%n");
         System.out.printf(border);
         System.out.printf("| %-44s |%n", "\t\t" + title);
         System.out.printf(border);
@@ -137,7 +138,6 @@ public class MenuService implements IMenuService {
             System.out.println("Transaksi berhasil!");
         } catch (IOException e) {
             System.err.println("Error: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 }
