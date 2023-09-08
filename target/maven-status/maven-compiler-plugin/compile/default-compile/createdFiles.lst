@@ -1,7 +1,11 @@
-main\java\Menu.class
+main\java\service\impl\ValidationService.class
 main\java\model\Product.class
+main\java\view\MainMenuView.class
+main\java\service\IMenuService.class
+main\java\service\IValidationService.class
 main\java\model\CartItem.class
+main\java\service\impl\MenuService.class
+main\java\service\impl\ShopService.class
+main\java\service\IShopService.class
 main\java\Main.class
-main\java\service\ShopService.class
 main\java\repository\ProductRepository.class
-main\java\Validation.class
