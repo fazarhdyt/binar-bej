@@ -1,8 +1,8 @@
-package main.java.service.impl;
+package service.impl;
 
-import main.java.model.CartItem;
-import main.java.model.Product;
-import main.java.service.IMenuService;
+import model.CartItem;
+import model.Product;
+import service.IMenuService;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -113,7 +113,7 @@ public class MenuService implements IMenuService {
         NumberFormat rupiah = NumberFormat.getCurrencyInstance(localeId);
         double grandPrice = 0;
         int totalQty = 0;
-        try (FileWriter fw = new FileWriter("C:/Users/Fazar/Documents/Binar/Challenge/StoreFazar/out/production/StoreFazar/receipt.txt");
+        try (FileWriter fw = new FileWriter("C:/Users/Fazar/Documents/Binar/Challenge/StoreFazar/target/receipt.txt");
              BufferedWriter bw = new BufferedWriter(fw)) {
 
             String border = "=====================================\n";

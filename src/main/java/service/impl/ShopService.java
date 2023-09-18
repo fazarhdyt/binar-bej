@@ -1,8 +1,8 @@
-package main.java.service.impl;
+package service.impl;
 
-import main.java.model.CartItem;
-import main.java.model.Product;
-import main.java.service.IShopService;
+import model.CartItem;
+import model.Product;
+import service.IShopService;
 
 import java.util.List;
 

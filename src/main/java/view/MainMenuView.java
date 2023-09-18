@@ -1,11 +1,11 @@
-package main.java.view;
+package view;
 
-import main.java.model.CartItem;
-import main.java.model.Product;
-import main.java.repository.ProductRepository;
-import main.java.service.IMenuService;
-import main.java.service.IShopService;
-import main.java.service.IValidationService;
+import model.CartItem;
+import model.Product;
+import repository.ProductRepository;
+import service.IMenuService;
+import service.IShopService;
+import service.IValidationService;
 
 import java.util.ArrayList;
 import java.util.List;

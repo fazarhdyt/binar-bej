@@ -1,6 +1,6 @@
-package main.java.service;
+package service;
 
-import main.java.model.Product;
+import model.Product;
 
 import java.util.List;
 

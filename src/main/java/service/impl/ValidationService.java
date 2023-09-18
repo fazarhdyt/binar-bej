@@ -1,7 +1,7 @@
-package main.java.service.impl;
+package service.impl;
 
-import main.java.model.Product;
-import main.java.service.IValidationService;
+import model.Product;
+import service.IValidationService;
 
 import java.util.List;
 import java.util.Scanner;

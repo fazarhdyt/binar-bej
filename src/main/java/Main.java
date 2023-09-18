@@ -1,12 +1,10 @@
-package main.java;
-
-import main.java.service.IMenuService;
-import main.java.service.IShopService;
-import main.java.service.IValidationService;
-import main.java.service.impl.MenuService;
-import main.java.service.impl.ShopService;
-import main.java.service.impl.ValidationService;
-import main.java.view.MainMenuView;
+import service.IMenuService;
+import service.IShopService;
+import service.IValidationService;
+import service.impl.MenuService;
+import service.impl.ShopService;
+import service.impl.ValidationService;
+import view.MainMenuView;
 
 public class Main {
     public static void main(String[] args) {

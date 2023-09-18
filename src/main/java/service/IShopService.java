@@ -1,7 +1,7 @@
-package main.java.service;
+package service;
 
-import main.java.model.CartItem;
-import main.java.model.Product;
+import model.CartItem;
+import model.Product;
 
 import java.util.List;
 
