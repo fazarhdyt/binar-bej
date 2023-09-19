@@ -12,6 +12,4 @@ public interface IShopService {
 
     void addToCartShop(List<CartItem> cartItems, Product product, int qty);
 
-    boolean checkItem(List<CartItem> cartItems, Product product);
-
 }
