@@ -5,6 +5,7 @@ import model.Product;
 import service.IShopService;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ShopService implements IShopService {
 
@@ -15,15 +16,10 @@ public class ShopService implements IShopService {
      * @param id
      * @return
      */
-    public Product getProductById(List<Product> products, int id) {
-        Product result = null;
-        for (Product product : products) {
-            if (product.getId() == id) {
-                result = product;
-                break;
-            }
-        }
-        return result;
+    public Optional<Product> getProductById(List<Product> products, int id) {
+        return products.stream()
+                .filter(product -> product.getId() == id)
+                .findFirst();
     }
 
     /**
@@ -35,35 +31,17 @@ public class ShopService implements IShopService {
      */
     public void addToCartShop(List<CartItem> cartItems, Product product, int qty) {
         CartItem item = null;
-        boolean findItem = checkItem(cartItems, product);
-        if (findItem) {
-            for (CartItem cartItem : cartItems) {
-                if (cartItem.getProduct().equals(product)) {
-                    cartItem.setQty(cartItem.getQty() + qty);
-                    cartItem.setTotalPrice();
-                    break;
-                }
-            }
+        Optional<CartItem> existingItem = cartItems.stream()
+                .filter(cartItem -> cartItem.getProduct().equals(product))
+                .findFirst();
+
+        if (existingItem.isPresent()) {
+            item = existingItem.get();
+            item.setQty(item.getQty() + qty);
+            item.setTotalPrice();
         } else {
             item = new CartItem(product, qty);
             cartItems.add(item);
         }
     }
-
-    /**
-     * method ini digunakan untuk mengecek apakah menu yang akan dipesan sudah ada di dalam keranjang atau belum
-     *
-     * @param cartItems
-     * @param product
-     * @return
-     */
-    public boolean checkItem(List<CartItem> cartItems, Product product) {
-        for (CartItem item : cartItems) {
-            if (item.getProduct().getId() == product.getId()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 }

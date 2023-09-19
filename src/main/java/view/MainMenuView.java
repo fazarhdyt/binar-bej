@@ -9,6 +9,7 @@ import service.IValidationService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class MainMenuView {
 
@@ -63,11 +64,14 @@ public class MainMenuView {
                     break;
                 default:
                     try {
-                        Product product = shopService.getProductById(listProducts, choose);
-                        menuService.printConfirmOrder(product);
-                        qty = Integer.parseInt(validationService.inputUser("qty => ", "masukkan hanya dengan angka positif", regexNumeric));
-                        if (qty != 0) {
-                            shopService.addToCartShop(listCartItems, product, qty);
+                        Optional<Product> product = shopService.getProductById(listProducts, choose);
+                        if (product.isPresent()) {
+                            Product selectedProduct = product.get();
+                            menuService.printConfirmOrder(selectedProduct);
+                            qty = Integer.parseInt(validationService.inputUser("qty => ", "masukkan hanya dengan angka positif", regexNumeric));
+                            if (qty != 0) {
+                                shopService.addToCartShop(listCartItems, selectedProduct, qty);
+                            }
                         }
                     } catch (NumberFormatException nfe) {
                         System.err.println("Error: " + nfe.getMessage());

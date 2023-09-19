@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.IntStream;
 
 public class MenuService implements IMenuService {
     /**
@@ -32,9 +33,11 @@ public class MenuService implements IMenuService {
         if (products.isEmpty()) {
             System.out.printf("| %-41s |%n", "\t\t\tmenu tidak ditemukan");
         } else {
-            for (Product product : products) {
-                System.out.printf(spacing, product.getId(), product.getProductName(), rupiah.format(product.getPrice()));
-            }
+            IntStream.range(0, products.size())
+                    .forEach(i -> {
+                        Product product = products.get(i);
+                        System.out.printf(spacing, product.getId(), product.getProductName(), rupiah.format(product.getPrice()));
+                    });
         }
         System.out.printf(border);
         System.out.printf("| %-4s | %-41s |%n", "99", "Pesan dan Bayar");
@@ -77,11 +80,17 @@ public class MenuService implements IMenuService {
         if (cartItems.isEmpty()) {
             System.out.printf("| %-37s |%n", "\tBelum ada menu yang dipilih");
         } else {
-            for (CartItem item : cartItems) {
-                System.out.printf("| %-16s | %-2s | %-14s |%n", item.getProduct().getProductName(), item.getQty(), rupiah.format(item.getTotalPrice()));
-                totalQty += item.getQty();
-                grandPrice += item.getTotalPrice();
-            }
+            totalQty = cartItems.stream()
+                    .mapToInt(CartItem::getQty)
+                    .sum();
+            grandPrice = cartItems.stream()
+                    .mapToDouble(CartItem::getTotalPrice)
+                    .sum();
+            IntStream.range(0, cartItems.size())
+                    .forEach(i -> {
+                        CartItem item = cartItems.get(i);
+                        System.out.printf("| %-16s | %-2s | %-14s |%n", item.getProduct().getProductName(), item.getQty(), rupiah.format(item.getTotalPrice()));
+                    });
         }
         System.out.printf(border);
         System.out.printf("| %-16s | %-2s | %-14s |%n", "Total", totalQty, rupiah.format(grandPrice));
@@ -124,11 +133,21 @@ public class MenuService implements IMenuService {
             bw.write(border);
 
             bw.write("\nTerima kasih sudah memesan\ndi " + title + "\n\nDi bawah ini adalah pesanan anda\n\n");
-            for (CartItem item : cartItems) {
-                bw.write(item.getProduct().getProductName() + "\t" + item.getQty() + "\t" + rupiah.format(item.getTotalPrice()) + "\n");
-                totalQty += item.getQty();
-                grandPrice += item.getTotalPrice();
-            }
+            totalQty = cartItems.stream()
+                    .mapToInt(CartItem::getQty)
+                    .sum();
+            grandPrice = cartItems.stream()
+                    .mapToDouble(CartItem::getTotalPrice)
+                    .sum();
+            IntStream.range(0, cartItems.size())
+                    .forEach(i -> {
+                        CartItem item = cartItems.get(i);
+                        try {
+                            bw.write(item.getProduct().getProductName() + "\t" + item.getQty() + "\t" + rupiah.format(item.getTotalPrice()) + "\n");
+                        } catch (IOException e) {
+                            System.err.println("Error: " + e.getMessage());
+                        }
+                    });
             bw.write(border2);
             bw.write("Total:\t\t" + totalQty + "\t" + rupiah.format(grandPrice) + "\n\n");
             bw.write("\nPembayaran: Tunai\n\n");

@@ -51,13 +51,8 @@ public class ValidationService implements IValidationService {
      * @return
      */
     public boolean checkAvailabilityOrderId(List<Product> products, int id) {
-        boolean result = false;
-        for (Product product : products) {
-            if (product.getId() == id) {
-                result = true;
-            }
-        }
-        return result;
+        return products.stream()
+                .anyMatch(product -> product.getId() == id);
     }
 
     /**
@@ -84,6 +79,4 @@ public class ValidationService implements IValidationService {
         } while (isLooping);
         return inputOrderId;
     }
-
-
 }
