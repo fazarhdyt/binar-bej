@@ -360,11 +360,11 @@
 //
 //    public void showOrders() throws ParseException {
 //        System.out.println("Berikut adalah daftar order saat ini");
-//        System.out.println("Order Id \t | \t Product Code \t | \t Quantity \t | \t Total Price" +
+//        System.out.println("Order Id \t | \t Product Name \t | \t Quantity \t | \t Total Price" +
 //                "\t | \t Destination Address");
 //        List<OrderDetail> orders = orderDetailService.getOrderDetail();
 //        orders.forEach(order -> {
-//            System.out.println(order.getId() + " \t | \t " + order.getProduct().getProductCode() +
+//            System.out.println(order.getId() + " \t | \t " + order.getProduct().getProductName() +
 //                    " \t | \t " + order.getTotalPrice() + " \t | \t " + order.getOrder().getDestinationAddress());
 //        });
 //        this.mainMenu();
