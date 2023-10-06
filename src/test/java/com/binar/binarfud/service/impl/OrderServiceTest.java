@@ -50,7 +50,7 @@ public class OrderServiceTest {
     public void testOrderProducts_success() {
 
         User user = User.builder()
-                .username("user1")
+                .username("user")
                 .email("user@gmail.com")
                 .password("password")
                 .build();
@@ -58,9 +58,9 @@ public class OrderServiceTest {
         userRepository.save(user);
 
         Product product = new Product();
-        product.setProductCode("P123");
-        product.setProductName("Product 1");
-        product.setPrice(10000);
+        product.setProductCode("KSUSU");
+        product.setProductName("Ultra Milk");
+        product.setPrice(5000);
 
         productRepository.save(product);
 
@@ -73,7 +73,7 @@ public class OrderServiceTest {
 
         Order order = new Order();
         order.setOrderTime(new Date());
-        order.setDestinationAddress("Address 1");
+        order.setDestinationAddress("Kelapa Dua");
         order.setUser(user);
         order.setCompleted(false);
         order.setOrderDetails(orderDetails);
@@ -94,22 +94,22 @@ public class OrderServiceTest {
         assertEquals(order.getId(), orderDetailInDatabase.getOrder().getId());
         assertEquals(product.getProductCode(), orderDetailInDatabase.getProduct().getProductCode());
         assertEquals(2, orderDetailInDatabase.getQuantity());
-        assertEquals(20000, orderDetailInDatabase.getTotalPrice());
+        assertEquals(10000, orderDetailInDatabase.getTotalPrice());
     }
 
     @Test
     public void testOrderProducts_userNotRegister() {
 
         Product product = new Product();
-        product.setProductCode("P123");
-        product.setProductName("Product 1");
+        product.setProductCode("KSUSU");
+        product.setProductName("Ultra Milk");
         product.setPrice(10000);
 
         productRepository.save(product);
 
         Order order = new Order();
         order.setOrderTime(new Date());
-        order.setDestinationAddress("Address 1");
+        order.setDestinationAddress("Sukmajaya");
         order.setCompleted(false);
 
         OrderDetail orderDetail = new OrderDetail();

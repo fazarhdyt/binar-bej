@@ -52,9 +52,9 @@ public class ProductServiceTest {
         merchantRepository.save(merchant);
 
         Product productToSave = new Product();
-        productToSave.setProductCode("ABC001");
-        productToSave.setProductName("Baterai ABC");
-        productToSave.setPrice(10000);
+        productToSave.setProductCode("KSUSU");
+        productToSave.setProductName("Ultra Milk");
+        productToSave.setPrice(7000);
 
         // Act
         Product createdProduct = productService.createProduct(productToSave, merchant.getMerchantCode());
@@ -68,7 +68,7 @@ public class ProductServiceTest {
     @Test
     public void testGetProductByProductCode_productExists() {
 
-        String productCode = "testProduct";
+        String productCode = "KSUSU";
         Product product = new Product();
         product.setProductCode(productCode);
         productRepository.save(product);
@@ -93,14 +93,14 @@ public class ProductServiceTest {
     @Test
     public void testUpdateProductByProductCode_productExists() {
 
-        String productCode = "existingProduct";
+        String productCode = "KSUSU";
         Product existingProduct = new Product();
         existingProduct.setProductCode(productCode);
         productRepository.save(existingProduct);
 
         Product updatedProduct = new Product();
         updatedProduct.setProductCode(productCode);
-        updatedProduct.setProductName("product update name");
+        updatedProduct.setProductName("Ultra Milk");
         updatedProduct.setPrice(7000);
 
         // Act
@@ -158,17 +158,17 @@ public class ProductServiceTest {
         Product product1 = new Product();
         product1.setProductCode("PROD1");
         product1.setProductName("Product 1");
-        product1.setPrice(10.0);
+        product1.setPrice(1000);
 
         Product product2 = new Product();
         product2.setProductName("Product 2");
         product2.setProductCode("PROD2");
-        product2.setPrice(20.0);
+        product2.setPrice(2000);
 
         Product product3 = new Product();
         product3.setProductCode("PROD3");
         product3.setProductName("Product 3");
-        product3.setPrice(30.0);
+        product3.setPrice(3000);
 
         productRepository.saveAll(Arrays.asList(product1, product2, product3));
 
@@ -194,7 +194,7 @@ public class ProductServiceTest {
 
         merchantRepository.save(merchant);
 
-        String productCode = "existingProduct";
+        String productCode = "KSUSU";
         Product existingProduct = new Product();
         existingProduct.setProductCode(productCode);
         productService.createProduct(existingProduct, merchant.getMerchantCode());
@@ -211,7 +211,7 @@ public class ProductServiceTest {
     @Test
     public void testDeleteProductByProductCode_productNotFound() {
 
-        String productCode = "nonExistentUser";
+        String productCode = "nonExistentProduct";
 
         // Act and Assert
         assertThrows(RuntimeException.class, () -> productService.deleteProductByProductCode(productCode));

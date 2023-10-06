@@ -34,9 +34,9 @@ public class MerchantServiceTest {
     public void testCreateMerchant_success() {
 
         Merchant merchantToSave = new Merchant();
-        merchantToSave.setMerchantCode("M123");
-        merchantToSave.setMerchantName("Merchant 1");
-        merchantToSave.setMerchantLocation("Location 1");
+        merchantToSave.setMerchantCode("MDR001");
+        merchantToSave.setMerchantName("Madura 1");
+        merchantToSave.setMerchantLocation("Kemiri Muka");
         merchantToSave.setOpen(true);
 
         // Act
@@ -53,7 +53,7 @@ public class MerchantServiceTest {
     @Test
     public void testGetMerchantByMerchantCode_merchantExists() {
 
-        String merchantCode = "M123";
+        String merchantCode = "MDR001";
         Merchant merchant = new Merchant();
         merchant.setMerchantCode(merchantCode);
         merchantService.createMerchant(merchant);
@@ -69,7 +69,7 @@ public class MerchantServiceTest {
     @Test
     public void testGetMerchantByMerchantCode_merchantNotFound() {
 
-        String merchantCode = "NonExistentMerchantCode";
+        String merchantCode = "NonExistentMerchant";
 
         // Act and Assert
         assertThrows(RuntimeException.class, () -> merchantService.getMerchantByMerchantCode(merchantCode));
@@ -78,7 +78,7 @@ public class MerchantServiceTest {
     @Test
     public void testUpdateMerchantByMerchantCode_merchantExists() {
 
-        String merchantCode = "M123";
+        String merchantCode = "MDR001";
         Merchant existingMerchant = new Merchant();
         existingMerchant.setMerchantCode(merchantCode);
         merchantService.createMerchant(existingMerchant);
@@ -110,7 +110,7 @@ public class MerchantServiceTest {
     @Test
     public void testUpdateMerchantByMerchantCode_merchantNotFound() {
 
-        String merchantCode = "NonExistentMerchantCode";
+        String merchantCode = "NonExistentMerchant";
         Merchant updatedMerchant = new Merchant();
 
         // Act and Assert
@@ -121,18 +121,18 @@ public class MerchantServiceTest {
     public void testGetOpenMerchants_merchantsExist() {
 
         Merchant openMerchant1 = new Merchant();
-        openMerchant1.setMerchantCode("MERCH1");
-        openMerchant1.setMerchantName("Open Merchant 1");
+        openMerchant1.setMerchantCode("MDR001");
+        openMerchant1.setMerchantName("Madura 1");
         openMerchant1.setOpen(true);
 
         Merchant openMerchant2 = new Merchant();
-        openMerchant2.setMerchantCode("MERCH2");
-        openMerchant2.setMerchantName("Open Merchant 2");
+        openMerchant2.setMerchantCode("MDR002");
+        openMerchant2.setMerchantName("Madura 2");
         openMerchant2.setOpen(true);
 
         Merchant closedMerchant = new Merchant();
-        closedMerchant.setMerchantCode("MERCH3");
-        closedMerchant.setMerchantName("Closed Merchant");
+        closedMerchant.setMerchantCode("WRC001");
+        closedMerchant.setMerchantName("Warung Ucok");
         closedMerchant.setOpen(false);
 
         merchantRepository.saveAll(Arrays.asList(openMerchant1, openMerchant2, closedMerchant));
@@ -150,13 +150,13 @@ public class MerchantServiceTest {
     public void testGetOpenMerchants_noOpenMerchants() {
 
         Merchant closedMerchant1 = new Merchant();
-        closedMerchant1.setMerchantCode("MERCH1");
-        closedMerchant1.setMerchantName("Closed Merchant 1");
+        closedMerchant1.setMerchantCode("WRC001");
+        closedMerchant1.setMerchantName("Warung Ucok 1");
         closedMerchant1.setOpen(false);
 
         Merchant closedMerchant2 = new Merchant();
-        closedMerchant2.setMerchantCode("MERCH2");
-        closedMerchant2.setMerchantName("Closed Merchant 2");
+        closedMerchant2.setMerchantCode("WRC002");
+        closedMerchant2.setMerchantName("Warung Ucok 2");
         closedMerchant2.setOpen(false);
 
         merchantRepository.saveAll(Arrays.asList(closedMerchant1, closedMerchant2));
@@ -180,8 +180,8 @@ public class MerchantServiceTest {
 
         Merchant merchant1 = new Merchant();
         Merchant merchant2 = new Merchant();
-        merchant1.setMerchantCode("MERCH001");
-        merchant2.setMerchantCode("MERCH002");
+        merchant1.setMerchantCode("MDR001");
+        merchant2.setMerchantCode("MDR002");
         merchantService.createMerchant(merchant1);
         merchantService.createMerchant(merchant2);
 
@@ -203,19 +203,16 @@ public class MerchantServiceTest {
     public void testGetMerchantsWithPagination_success() {
         // Act and Assert
         Merchant merchant1 = new Merchant();
-        merchant1.setMerchantCode("MERCH1");
-        merchant1.setMerchantName("Merchant 1");
-//        merchant1.setPrice(10.0);
+        merchant1.setMerchantCode("MDR1");
+        merchant1.setMerchantName("Madura 1");
 
         Merchant merchant2 = new Merchant();
-        merchant2.setMerchantCode("MERCH2");
-        merchant2.setMerchantName("Merchant 2");
-//        merchant2.setPrice(20.0);
+        merchant2.setMerchantCode("MDR2");
+        merchant2.setMerchantName("Madura 2");
 
         Merchant product3 = new Merchant();
-        product3.setMerchantCode("MERCH3");
-        product3.setMerchantName("Merchant 3");
-//        product3.setPrice(30.0);
+        product3.setMerchantCode("MDR3");
+        product3.setMerchantName("Madura 3");
 
         merchantRepository.saveAll(Arrays.asList(merchant1, merchant2, product3));
 
@@ -233,7 +230,7 @@ public class MerchantServiceTest {
     @Test
     public void testDeleteMerchantByMerchantCode_merchantExists() {
 
-        String merchantCode = "M123";
+        String merchantCode = "MDR001";
         Merchant existingMerchant = new Merchant();
         existingMerchant.setMerchantCode(merchantCode);
         merchantService.createMerchant(existingMerchant);
@@ -249,7 +246,7 @@ public class MerchantServiceTest {
     @Test
     public void testDeleteMerchantByMerchantCode_merchantNotFound() {
 
-        String merchantCode = "NonExistentMerchantCode";
+        String merchantCode = "NonExistentMerchant";
 
         // Act and Assert
         assertThrows(RuntimeException.class, () -> merchantService.deleteMerchantByMerchantCode(merchantCode));

@@ -32,8 +32,8 @@ public class UserServiceTest {
     public void testCreateUser_success() {
 
         User userToSave = new User();
-        userToSave.setUsername("testuser");
-        userToSave.setEmail("testuser@example.com");
+        userToSave.setUsername("user");
+        userToSave.setEmail("user@example.com");
 
         // Act
         User createdUser = userService.createUser(userToSave);
@@ -47,7 +47,7 @@ public class UserServiceTest {
     @Test
     public void testGetUserByUsername_userExists() {
 
-        String username = "testUser";
+        String username = "user";
         User user = new User();
         user.setUsername(username);
         userRepository.save(user);
@@ -72,7 +72,7 @@ public class UserServiceTest {
     @Test
     public void testUpdateUserByUsername_userExists() {
 
-        String username = "existingUser";
+        String username = "user";
         User existingUser = new User();
         existingUser.setUsername(username);
         userRepository.save(existingUser);
@@ -132,7 +132,7 @@ public class UserServiceTest {
     @Test
     public void testDeleteUserByUsername_userExists() {
 
-        String username = "existingUser";
+        String username = "user";
         User existingUser = new User();
         existingUser.setUsername(username);
         userService.createUser(existingUser);
