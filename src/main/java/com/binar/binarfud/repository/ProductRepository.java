@@ -4,6 +4,7 @@ import com.binar.binarfud.model.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +15,8 @@ public interface ProductRepository extends JpaRepository<Product, String> {
 
     Optional<Product> getProductByProductCode(String productCode);
 
+    @Modifying
+    @Query("DELETE FROM Product p WHERE p.productCode = :productCode")
     void deleteByProductCode(String productCode);
 
     boolean existsByProductCode(String productCode);
