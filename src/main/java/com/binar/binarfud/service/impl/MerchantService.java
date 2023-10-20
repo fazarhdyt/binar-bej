@@ -1,7 +1,10 @@
 package com.binar.binarfud.service.impl;
 
+import com.binar.binarfud.dto.MerchantDto;
+import com.binar.binarfud.exception.ProcessException;
 import com.binar.binarfud.model.Merchant;
 import com.binar.binarfud.repository.MerchantRepository;
+import com.binar.binarfud.service.EntityMapper;
 import com.binar.binarfud.service.IMerchantService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -21,99 +24,105 @@ public class MerchantService implements IMerchantService {
     private MerchantRepository merchantRepository;
 
     @Override
-    public Merchant createMerchant(Merchant merchant) {
+    public MerchantDto createMerchant(Merchant merchant) {
         try {
             log.info("trying to create merchant");
             merchantRepository.save(merchant);
             log.info("create merchant with merchant code: {} successfully", merchant.getMerchantCode());
-            return merchant;
+            return EntityMapper.merchantToMerchantDto(merchant);
         } catch (Exception e) {
-            e.getMessage();
-            log.error("create merchant with merchant code: {} failed", merchant.getMerchantCode());
+            log.error("create merchant with merchant code: {} failed\n", merchant.getMerchantCode() + e.getMessage());
             throw e;
         }
     }
 
     @Override
-    public Merchant getMerchantByMerchantCode(String merchantCode) {
+    public MerchantDto getMerchantByMerchantCode(String merchantCode) {
         try {
             log.info("trying to get merchant with merchant code: {}", merchantCode);
             if (!merchantRepository.existsByMerchantCode(merchantCode)) {
-                throw new RuntimeException("merchant not found");
+                throw new ProcessException("merchant", "merchantCode", merchantCode);
             }
             Merchant merchant = merchantRepository.getMerchantByMerchantCode(merchantCode).get();
             log.info("get merchant with merchant code: {} successfully", merchantCode);
-            return merchant;
+            return EntityMapper.merchantToMerchantDto(merchant);
         } catch (Exception e) {
-            e.getMessage();
-            log.error("get merchant with merchant code: {} failed", merchantCode);
+            log.error("get merchant with merchant code: {} failed\n", merchantCode + e.getMessage());
             throw e;
         }
     }
 
     @Override
-    public Merchant updateMerchantByMerchantCode(String merchantCode, Merchant merchant) {
+    public MerchantDto updateMerchantByMerchantCode(String merchantCode, Merchant merchant) {
         try {
             log.info("trying to update merchant with merchant code: {}", merchantCode);
             if (!merchantRepository.existsByMerchantCode(merchantCode)) {
-                throw new IllegalArgumentException("merchant with merchantCode " + merchantCode + " not found");
+                throw new ProcessException("merchant", "merchantCode", merchantCode);
             }
             merchant.setMerchantCode(merchantCode);
+            Merchant merchantUpdate = merchantRepository.getMerchantByMerchantCode(merchantCode).get();
+            merchantUpdate.setMerchantName(merchant.getMerchantName() == null ? merchantUpdate.getMerchantName() : merchant.getMerchantName());
+            merchantUpdate.setMerchantLocation(merchant.getMerchantLocation() == null ? merchantUpdate.getMerchantLocation() : merchant.getMerchantLocation());
+            merchantUpdate.setOpen(merchant.getOpen() == null ? merchantUpdate.getOpen() : merchant.getOpen());
             log.info("update merchant with merchant code: {} successfully", merchantCode);
-            return merchantRepository.save(merchant);
+            return EntityMapper.merchantToMerchantDto(merchantRepository.save(merchantUpdate));
         } catch (Exception e) {
-            e.getMessage();
-            log.error("update merchant with merchant code: {} failed", merchantCode);
+            log.error("update merchant with merchant code: {} failed\n", merchantCode + e.getMessage());
             throw e;
         }
     }
 
     @Override
-    public List<Merchant> getMerchants() {
+    public List<MerchantDto> getMerchants() {
         try {
             log.info("trying to get all merchant");
             List<Merchant> merchants = merchantRepository.findAll();
             if (merchants.isEmpty()) {
                 throw new RuntimeException("merchant is empty");
             }
+            List<MerchantDto> merchantsDto = new ArrayList<>();
+            for (Merchant merchant : merchants) {
+                MerchantDto merchantDto = EntityMapper.merchantToMerchantDto(merchant);
+                merchantsDto.add(merchantDto);
+            }
             log.info("get merchants successfully");
-            return merchants;
+            return merchantsDto;
         } catch (Exception e) {
-            e.getMessage();
-            log.error("get merchants failed");
+            log.error("get merchants failed\n" + e.getMessage());
             throw e;
         }
     }
 
     @Override
-    public List<Merchant> getOpenMerchants() {
+    public List<MerchantDto> getOpenMerchants() {
         try {
             log.info("trying to get open merchants");
-            List<Merchant> merchants = merchantRepository.findAll();
-            if (merchants.isEmpty()) {
+            if (merchantRepository.findAll().isEmpty()) {
                 throw new RuntimeException("all merchants is closed");
             }
+            List<Merchant> merchants = merchantRepository.getOpenMerchant();
+            List<MerchantDto> merchantsDto = new ArrayList<>();
+            for (Merchant merchant : merchants) {
+                MerchantDto merchantDto = EntityMapper.merchantToMerchantDto(merchant);
+                merchantsDto.add(merchantDto);
+            }
             log.info("get open merchants successfully");
-            return merchants.stream()
-                    .filter(Merchant::isOpen)
-                    .collect(Collectors.toList());
+            return merchantsDto;
         } catch (Exception e) {
-            e.getMessage();
-            log.error("get open merchants failed");
+            log.error("get open merchants failed\n" + e.getMessage());
             throw e;
         }
     }
 
     @Override
-    public Page<Merchant> getMerchantsWithPagination(int page) {
+    public Page<MerchantDto> getMerchantsWithPagination(int page) {
         try {
             log.info("trying to get merchants with pagination");
             Page<Merchant> merchants = merchantRepository.getMerchantWithPagination(PageRequest.of(page, 3));
             log.info("get merchants with pagination successfully");
-            return merchants;
+            return EntityMapper.merchantToMerchantDto(merchants);
         } catch (Exception e) {
-            e.getMessage();
-            log.error("get merchants with pagination failed");
+            log.error("get merchants with pagination failed\n" + e.getMessage());
             throw e;
         }
     }
@@ -124,13 +133,12 @@ public class MerchantService implements IMerchantService {
         try {
             log.info("trying to delete merchant with merchant code: {}", merchantCode);
             if (!merchantRepository.existsByMerchantCode(merchantCode)) {
-                throw new RuntimeException("merchant not found");
+                throw new ProcessException("merchant", "merchantCode", merchantCode);
             }
             log.info("delete merchant with merchant code: {} successfully", merchantCode);
             merchantRepository.deleteByMerchantCode(merchantCode);
         } catch (Exception e) {
-            e.getMessage();
-            log.error("delete merchant with merchant code: {} failed", merchantCode);
+            log.error("delete merchant with merchant code: {} failed\n", merchantCode + e.getMessage());
             throw e;
         }
     }

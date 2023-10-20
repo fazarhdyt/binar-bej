@@ -1,18 +1,19 @@
 package com.binar.binarfud.service;
 
+import com.binar.binarfud.dto.UserDto;
 import com.binar.binarfud.model.User;
 
 import java.util.List;
 
 public interface IUserService {
 
-    User createUser(User user);
+    UserDto createUser(User user);
 
-    User getUserByUsername(String username);
+    UserDto getUserByUsername(String username);
 
-    User updateUserByUsername(String username, User user);
+    UserDto updateUserByUsername(String username, User user);
 
-    List<User> getUsers();
+    List<UserDto> getUsers();
 
     void deleteUserByUsername(String username);
 }

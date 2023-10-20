@@ -1,10 +1,10 @@
 package com.binar.binarfud.service;
 
-import com.binar.binarfud.model.OrderDetail;
+import com.binar.binarfud.dto.OrderDetailDto;
 
 import java.util.List;
 
 public interface IOrderDetailService {
 
-    List<OrderDetail> getOrderDetail();
+    List<OrderDetailDto> getOrderDetail(String orderId);
 }

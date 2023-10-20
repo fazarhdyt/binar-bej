@@ -1,25 +1,24 @@
 package com.binar.binarfud.service;
 
+import com.binar.binarfud.dto.MerchantDto;
 import com.binar.binarfud.model.Merchant;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public interface IMerchantService {
 
-    Merchant createMerchant(Merchant merchant);
+    MerchantDto createMerchant(Merchant merchant);
 
-    Merchant getMerchantByMerchantCode(String merchantCode);
+    MerchantDto getMerchantByMerchantCode(String merchantCode);
 
-    Merchant updateMerchantByMerchantCode(String merchantCode, Merchant merchant);
+    MerchantDto updateMerchantByMerchantCode(String merchantCode, Merchant merchant);
 
-    List<Merchant> getMerchants();
+    List<MerchantDto> getMerchants();
 
-    List<Merchant> getOpenMerchants();
+    List<MerchantDto> getOpenMerchants();
 
-    Page<Merchant> getMerchantsWithPagination(int page);
+    Page<MerchantDto> getMerchantsWithPagination(int page);
 
     void deleteMerchantByMerchantCode(String merchantCode);
 }
