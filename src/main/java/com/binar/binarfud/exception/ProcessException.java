@@ -1,7 +1,9 @@
 package com.binar.binarfud.exception;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class ProcessException extends RuntimeException{
 
