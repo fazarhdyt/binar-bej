@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.List;
 
@@ -21,10 +22,13 @@ public class Merchant implements Serializable {
     @Column(unique = true)
     private String merchantCode;
 
+    @NotBlank(message = "merchant name is required")
     private String merchantName;
-    private String merchantLocation;
-    private boolean open;
 
-    @OneToMany(mappedBy = "merchant", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private String merchantLocation;
+    private Boolean open;
+
+    @OneToMany(mappedBy = "merchant")
     private List<Product> products;
+
 }
