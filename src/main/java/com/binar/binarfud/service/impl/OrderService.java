@@ -1,6 +1,6 @@
 package com.binar.binarfud.service.impl;
 
-import com.binar.binarfud.exception.ProcessException;
+import com.binar.binarfud.exception.ResourceNotFoundException;
 import com.binar.binarfud.model.Order;
 import com.binar.binarfud.model.OrderDetail;
 import com.binar.binarfud.model.OrderDetailId;
@@ -67,7 +67,7 @@ public class OrderService implements IOrderService {
         try {
             log.info("trying to resolve order with order id: {}", id);
             if (!orderRepository.existsById(id)) {
-                throw new ProcessException("order", "id", id);
+                throw new ResourceNotFoundException("order", "id", id);
             }
             Order order = orderRepository.getById(id);
             if (order.isCompleted()) {

@@ -1,7 +1,7 @@
 package com.binar.binarfud.service.impl;
 
 import com.binar.binarfud.dto.MerchantDto;
-import com.binar.binarfud.exception.ProcessException;
+import com.binar.binarfud.exception.ResourceNotFoundException;
 import com.binar.binarfud.model.Merchant;
 import com.binar.binarfud.repository.MerchantRepository;
 import com.binar.binarfud.service.EntityMapper;
@@ -41,7 +41,7 @@ public class MerchantService implements IMerchantService {
         try {
             log.info("trying to get merchant with merchant code: {}", merchantCode);
             if (!merchantRepository.existsByMerchantCode(merchantCode)) {
-                throw new ProcessException("merchant", "merchantCode", merchantCode);
+                throw new ResourceNotFoundException("merchant", "merchantCode", merchantCode);
             }
             Merchant merchant = merchantRepository.getMerchantByMerchantCode(merchantCode).get();
             log.info("get merchant with merchant code: {} successfully", merchantCode);
@@ -57,7 +57,7 @@ public class MerchantService implements IMerchantService {
         try {
             log.info("trying to update merchant with merchant code: {}", merchantCode);
             if (!merchantRepository.existsByMerchantCode(merchantCode)) {
-                throw new ProcessException("merchant", "merchantCode", merchantCode);
+                throw new ResourceNotFoundException("merchant", "merchantCode", merchantCode);
             }
             merchant.setMerchantCode(merchantCode);
             Merchant merchantUpdate = merchantRepository.getMerchantByMerchantCode(merchantCode).get();
@@ -133,7 +133,7 @@ public class MerchantService implements IMerchantService {
         try {
             log.info("trying to delete merchant with merchant code: {}", merchantCode);
             if (!merchantRepository.existsByMerchantCode(merchantCode)) {
-                throw new ProcessException("merchant", "merchantCode", merchantCode);
+                throw new ResourceNotFoundException("merchant", "merchantCode", merchantCode);
             }
             log.info("delete merchant with merchant code: {} successfully", merchantCode);
             merchantRepository.deleteByMerchantCode(merchantCode);

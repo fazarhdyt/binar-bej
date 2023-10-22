@@ -1,7 +1,7 @@
 package com.binar.binarfud.service.impl;
 
 import com.binar.binarfud.dto.UserDto;
-import com.binar.binarfud.exception.ProcessException;
+import com.binar.binarfud.exception.ResourceNotFoundException;
 import com.binar.binarfud.model.User;
 import com.binar.binarfud.repository.UserRepository;
 import com.binar.binarfud.service.EntityMapper;
@@ -44,7 +44,7 @@ public class UserService implements IUserService {
         try {
             log.info("trying to get user with username: {}", username);
             if (!userRepository.existsByUsername(username)) {
-                throw new ProcessException("user", "username", username);
+                throw new ResourceNotFoundException("user", "username", username);
             }
             User user = userRepository.getUserByUsername(username).get();
             log.info("get user with username: {} successfully", username);
@@ -60,7 +60,7 @@ public class UserService implements IUserService {
         try {
             log.info("trying to update user with username: {}", username);
             if (!userRepository.existsByUsername(username)) {
-                throw new ProcessException("user", "username", username);
+                throw new ResourceNotFoundException("user", "username", username);
             }
             User updateUser = userRepository.getUserByUsername(username).get();
             updateUser.setId(updateUser.getId());
@@ -102,7 +102,7 @@ public class UserService implements IUserService {
         try {
             log.info("trying to delete user with username: {}", username);
             if (!userRepository.existsByUsername(username)) {
-                throw new ProcessException("user", "username", username);
+                throw new ResourceNotFoundException("user", "username", username);
             }
             userRepository.deleteByUsername(username);
             log.info("delete user with username: {} successfully", username);

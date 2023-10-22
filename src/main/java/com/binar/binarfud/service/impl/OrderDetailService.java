@@ -1,7 +1,7 @@
 package com.binar.binarfud.service.impl;
 
 import com.binar.binarfud.dto.OrderDetailDto;
-import com.binar.binarfud.exception.ProcessException;
+import com.binar.binarfud.exception.ResourceNotFoundException;
 import com.binar.binarfud.model.Order;
 import com.binar.binarfud.model.OrderDetail;
 import com.binar.binarfud.repository.OrderRepository;
@@ -26,7 +26,7 @@ public class OrderDetailService implements IOrderDetailService {
         try {
             log.info("trying to get orders detail");
             if (!orderRepository.existsById(orderId)) {
-                throw new ProcessException("order", "orderId", orderId);
+                throw new ResourceNotFoundException("order", "orderId", orderId);
             }
             Order order = orderRepository.findById(orderId).get();
             List<OrderDetailDto> orderDetailsDto = new ArrayList<>();

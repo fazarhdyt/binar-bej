@@ -1,7 +1,7 @@
 package com.binar.binarfud.controller;
 
 import com.binar.binarfud.dto.ResponseData;
-import com.binar.binarfud.exception.ProcessException;
+import com.binar.binarfud.exception.ResourceNotFoundException;
 import com.binar.binarfud.model.User;
 import com.binar.binarfud.service.impl.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,7 @@ public class UserController {
         try {
             userService.updateUserByUsername(username, user);
             return ResponseData.statusResponse(userService.getUserByUsername(username), HttpStatus.OK, "success update user");
-        } catch (ProcessException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseData.statusResponse(null, HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
             return ResponseData.internalServerError(e.getMessage());
@@ -60,7 +60,7 @@ public class UserController {
         try {
             userService.deleteUserByUsername(username);
             return ResponseData.statusResponse(null, HttpStatus.OK, "success delete user");
-        } catch (ProcessException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseData.statusResponse(null, HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
             return ResponseData.internalServerError(e.getMessage());

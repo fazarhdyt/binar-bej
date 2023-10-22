@@ -1,7 +1,7 @@
 package com.binar.binarfud.service.impl;
 
 import com.binar.binarfud.dto.ProductDto;
-import com.binar.binarfud.exception.ProcessException;
+import com.binar.binarfud.exception.ResourceNotFoundException;
 import com.binar.binarfud.model.Merchant;
 import com.binar.binarfud.model.Product;
 import com.binar.binarfud.repository.MerchantRepository;
@@ -34,7 +34,7 @@ public class ProductService implements IProductService {
         try {
             log.info("trying to create product");
             if (!merchantRepository.existsByMerchantCode(merchantCode)) {
-                throw new ProcessException("merchant", "merchantCode", merchantCode);
+                throw new ResourceNotFoundException("merchant", "merchantCode", merchantCode);
             }
             Merchant merchant = merchantRepository.getMerchantByMerchantCode(merchantCode).get();
             product.setMerchant(merchant);
@@ -52,7 +52,7 @@ public class ProductService implements IProductService {
         try {
             log.info("trying to get product with product code: {}", productCode);
             if (!productRepository.existsByProductCode(productCode)) {
-                throw new ProcessException("product", "productCode", productCode);
+                throw new ResourceNotFoundException("product", "productCode", productCode);
             }
             Product product = productRepository.getProductByProductCode(productCode).get();
             log.info("get product with product code: {} successfully", productCode);
@@ -68,7 +68,7 @@ public class ProductService implements IProductService {
         try {
             log.info("trying to update product with product code: {}", productCode);
             if (!productRepository.existsByProductCode(productCode)) {
-                throw new ProcessException("product", "productCode", productCode);
+                throw new ResourceNotFoundException("product", "productCode", productCode);
             }
             Product productUpdate = productRepository.getProductByProductCode(productCode).get();
             productUpdate.setProductCode(productCode);
@@ -127,7 +127,7 @@ public class ProductService implements IProductService {
         try {
             log.info("trying to delete product with product code: {}", productCode);
             if (!productRepository.existsByProductCode(productCode)) {
-                throw new ProcessException("product", "productCode", productCode);
+                throw new ResourceNotFoundException("product", "productCode", productCode);
             }
             log.info("delete product with product code: {} successfully", productCode);
             productRepository.deleteByProductCode(productCode);

@@ -1,7 +1,7 @@
 package com.binar.binarfud.controller;
 
 import com.binar.binarfud.dto.ResponseData;
-import com.binar.binarfud.exception.ProcessException;
+import com.binar.binarfud.exception.ResourceNotFoundException;
 import com.binar.binarfud.model.Product;
 import com.binar.binarfud.service.impl.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class ProductController {
 
         try {
             return ResponseData.statusResponse(productService.getProducts(), HttpStatus.OK, "success get products");
-        } catch (ProcessException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseData.statusResponse(null, HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
             return ResponseData.internalServerError(e.getMessage());
@@ -59,7 +59,7 @@ public class ProductController {
         try {
             productService.updateProductByProductCode(productCode, product);
             return ResponseData.statusResponse(productService.getProductByProductCode(productCode), HttpStatus.OK, "success update product");
-        } catch (ProcessException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseData.statusResponse(null, HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
             return ResponseData.internalServerError(e.getMessage());
@@ -73,7 +73,7 @@ public class ProductController {
         try {
             productService.deleteProductByProductCode(productCode);
             return ResponseData.statusResponse(null, HttpStatus.OK, "success delete product");
-        } catch (ProcessException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseData.statusResponse(null, HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
             return ResponseData.internalServerError(e.getMessage());

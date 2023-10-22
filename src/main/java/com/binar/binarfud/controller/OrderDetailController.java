@@ -1,7 +1,7 @@
 package com.binar.binarfud.controller;
 
 import com.binar.binarfud.dto.ResponseData;
-import com.binar.binarfud.exception.ProcessException;
+import com.binar.binarfud.exception.ResourceNotFoundException;
 import com.binar.binarfud.service.impl.OrderDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ public class OrderDetailController {
 
         try {
             return ResponseData.statusResponse(orderDetailService.getOrderDetail(orderId), HttpStatus.OK, "success get order detail");
-        } catch (ProcessException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseData.statusResponse(null, HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
             return ResponseData.internalServerError(e.getMessage());

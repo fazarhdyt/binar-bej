@@ -1,7 +1,7 @@
 package com.binar.binarfud.controller;
 
 import com.binar.binarfud.dto.ResponseData;
-import com.binar.binarfud.exception.ProcessException;
+import com.binar.binarfud.exception.ResourceNotFoundException;
 import com.binar.binarfud.model.Merchant;
 import com.binar.binarfud.service.impl.MerchantService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class MerchantController {
 
         try {
             return ResponseData.statusResponse(merchantService.getMerchants(), HttpStatus.OK, "success get merchants");
-        } catch (ProcessException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseData.statusResponse(null, HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
             return ResponseData.internalServerError(e.getMessage());
@@ -70,7 +70,7 @@ public class MerchantController {
         try {
             merchantService.updateMerchantByMerchantCode(merchantCode, merchant);
             return ResponseData.statusResponse(merchantService.getMerchantByMerchantCode(merchantCode), HttpStatus.OK, "success update merchant");
-        } catch (ProcessException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseData.statusResponse(null, HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
             return ResponseData.internalServerError(e.getMessage());
@@ -84,7 +84,7 @@ public class MerchantController {
         try {
             merchantService.deleteMerchantByMerchantCode(merchantCode);
             return ResponseData.statusResponse(null, HttpStatus.OK, "success delete merchant");
-        } catch (ProcessException e) {
+        } catch (ResourceNotFoundException e) {
             return ResponseData.statusResponse(null, HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
             return ResponseData.internalServerError(e.getMessage());
