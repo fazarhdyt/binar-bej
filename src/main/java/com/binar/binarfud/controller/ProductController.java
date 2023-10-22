@@ -4,6 +4,7 @@ import com.binar.binarfud.dto.ResponseData;
 import com.binar.binarfud.exception.ResourceNotFoundException;
 import com.binar.binarfud.model.Product;
 import com.binar.binarfud.service.impl.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ public class ProductController {
     private ProductService productService;
 
     @PostMapping
+    @Operation(summary = "api to add product")
     public ResponseEntity<Object> addProduct(@Valid @RequestBody Product product) {
 
         try {
@@ -30,6 +32,7 @@ public class ProductController {
     }
 
     @GetMapping()
+    @Operation(summary = "api to get products")
     public ResponseEntity<Object> getProducts() {
 
         try {
@@ -43,6 +46,7 @@ public class ProductController {
     }
 
     @GetMapping("/{page}")
+    @Operation(summary = "api to get products per page")
     public ResponseEntity<Object> getProductsWithPagination(@PathVariable int page) {
 
         try {
@@ -54,6 +58,7 @@ public class ProductController {
     }
 
     @PutMapping("/{productCode}")
+    @Operation(summary = "api to update product by product code")
     public ResponseEntity<Object> updateProduct(@PathVariable String productCode, @Valid @RequestBody Product product) {
 
         try {
@@ -68,6 +73,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{productCode}")
+    @Operation(summary = "api to delete product by product code")
     public ResponseEntity<Object> deleteProduct(@PathVariable String productCode) {
 
         try {

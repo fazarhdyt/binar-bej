@@ -4,6 +4,7 @@ import com.binar.binarfud.dto.ResponseData;
 import com.binar.binarfud.exception.ResourceNotFoundException;
 import com.binar.binarfud.model.User;
 import com.binar.binarfud.service.impl.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
+    @Operation(summary = "api to create user")
     public ResponseEntity<Object> addUser(@Valid @RequestBody User user) {
 
         try {
@@ -30,6 +32,7 @@ public class UserController {
     }
 
     @GetMapping()
+    @Operation(summary = "api to get users")
     public ResponseEntity<Object> getUsers() {
 
         try {
@@ -41,6 +44,7 @@ public class UserController {
     }
 
     @PutMapping("/{username}")
+    @Operation(summary = "api to update user by username")
     public ResponseEntity<Object> updateUser(@PathVariable String username, @Valid @RequestBody User user) {
 
         try {
@@ -55,6 +59,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{username}")
+    @Operation(summary = "api to delete user by username")
     public ResponseEntity<Object> deleteUser(@PathVariable String username) {
 
         try {

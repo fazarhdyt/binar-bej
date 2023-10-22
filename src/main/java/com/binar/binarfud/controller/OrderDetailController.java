@@ -3,6 +3,7 @@ package com.binar.binarfud.controller;
 import com.binar.binarfud.dto.ResponseData;
 import com.binar.binarfud.exception.ResourceNotFoundException;
 import com.binar.binarfud.service.impl.OrderDetailService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ public class OrderDetailController {
     private OrderDetailService orderDetailService;
 
     @GetMapping("/{orderId}")
+    @Operation(summary = "api to get detail order by order id")
     public ResponseEntity<Object> getOrderDetail(@PathVariable String orderId) {
 
         try {

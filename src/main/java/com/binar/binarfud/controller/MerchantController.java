@@ -4,6 +4,7 @@ import com.binar.binarfud.dto.ResponseData;
 import com.binar.binarfud.exception.ResourceNotFoundException;
 import com.binar.binarfud.model.Merchant;
 import com.binar.binarfud.service.impl.MerchantService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ public class MerchantController {
     private MerchantService merchantService;
 
     @PostMapping
+    @Operation(summary = "api to create merchant")
     public ResponseEntity<Object> addMerchant(@Valid @RequestBody Merchant merchant) {
 
         try {
@@ -30,6 +32,7 @@ public class MerchantController {
     }
 
     @GetMapping()
+    @Operation(summary = "api to get merchants")
     public ResponseEntity<Object> getMerchants() {
 
         try {
@@ -43,6 +46,7 @@ public class MerchantController {
     }
 
     @GetMapping("/open")
+    @Operation(summary = "api to get open merchants")
     public ResponseEntity<Object> getOpenMerchant() {
 
         try {
@@ -54,6 +58,7 @@ public class MerchantController {
     }
 
     @GetMapping("/{page}")
+    @Operation(summary = "api to get merchants per page")
     public ResponseEntity<Object> getMerchantsWithPagination(@PathVariable int page) {
 
         try {
@@ -65,6 +70,7 @@ public class MerchantController {
     }
 
     @PutMapping("/{merchantCode}")
+    @Operation(summary = "api to update merchant by merchant code")
     public ResponseEntity<Object> updateProduct(@PathVariable String merchantCode, @Valid @RequestBody Merchant merchant) {
 
         try {
@@ -79,6 +85,7 @@ public class MerchantController {
     }
 
     @DeleteMapping("/{merchantCode}")
+    @Operation(summary = "api to delete merchant by merchant code")
     public ResponseEntity<Object> deleteProduct(@PathVariable String merchantCode) {
 
         try {

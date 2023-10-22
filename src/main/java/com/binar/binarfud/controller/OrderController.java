@@ -4,6 +4,7 @@ import com.binar.binarfud.dto.ResponseData;
 import com.binar.binarfud.model.Order;
 import com.binar.binarfud.service.impl.OrderService;
 import com.binar.binarfud.service.impl.ReportService;
+import io.swagger.v3.oas.annotations.Operation;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ public class OrderController {
     private HttpServletResponse response;
 
     @GetMapping("/{id}")
+    @Operation(summary = "api to get receipt by order id")
     public void getReceipt(@PathVariable String id) throws Exception {
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", "attachment; filename=\"binarfud-receipt.pdf\"");
@@ -36,6 +38,7 @@ public class OrderController {
     }
 
     @PostMapping
+    @Operation(summary = "api to order products")
     public void orderProducts(@Valid @RequestBody Order order) {
 
         try {
@@ -52,6 +55,7 @@ public class OrderController {
     }
 
     @PostMapping("/resolve")
+    @Operation(summary = "api to resolve order")
     public ResponseEntity<Object> resolveOrder(@Valid @RequestBody Order order) {
 
         try {
