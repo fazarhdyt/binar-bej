@@ -16,6 +16,7 @@ import com.binar.binarfud.repository.UserRepository;
 import com.binar.binarfud.security.jwt.JwtUtils;
 import com.binar.binarfud.security.service.RefreshTokenService;
 import com.binar.binarfud.security.service.UserDetailsImpl;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -60,6 +61,7 @@ public class AuthController {
     RefreshTokenService refreshTokenService;
 
     @PostMapping("/refreshtoken")
+    @Operation(summary = "api for user to relogin with refresh token")
     public ResponseEntity<?> refreshtoken(@Valid @RequestBody TokenRefreshRequest request) {
         String requestRefreshToken = request.getRefreshToken();
 
@@ -75,6 +77,7 @@ public class AuthController {
     }
 
     @PostMapping("/signin")
+    @Operation(summary = "api for user to login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
@@ -100,6 +103,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
+    @Operation(summary = "api for user to register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity
@@ -139,6 +143,7 @@ public class AuthController {
     }
 
     @PostMapping("/signout")
+    @Operation(summary = "api for user to sign out")
     public ResponseEntity<?> logoutUser() {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = userDetails.getUsername();
