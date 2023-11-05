@@ -19,29 +19,29 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping
-    @Operation(summary = "api to create user")
-    public ResponseEntity<Object> addUser(@Valid @RequestBody User user) {
-
-        try {
-            return ResponseData.statusResponse(userService.createUser(user), HttpStatus.OK, "success add user");
-        } catch (Exception e) {
-            return ResponseData.internalServerError(e.getMessage());
-        }
-
-    }
-
-    @GetMapping()
-    @Operation(summary = "api to get users")
-    public ResponseEntity<Object> getUsers() {
-
-        try {
-            return ResponseData.statusResponse(userService.getUsers(), HttpStatus.OK, "success get users");
-        } catch (Exception e) {
-            return ResponseData.internalServerError(e.getMessage());
-        }
-
-    }
+//    @PostMapping
+//    @Operation(summary = "api to create user")
+//    public ResponseEntity<Object> addUser(@Valid @RequestBody User user) {
+//
+//        try {
+//            return ResponseData.statusResponse(userService.createUser(user), HttpStatus.OK, "success add user");
+//        } catch (Exception e) {
+//            return ResponseData.internalServerError(e.getMessage());
+//        }
+//
+//    }
+//
+//    @GetMapping()
+//    @Operation(summary = "api to get users")
+//    public ResponseEntity<Object> getUsers() {
+//
+//        try {
+//            return ResponseData.statusResponse(userService.getUsers(), HttpStatus.OK, "success get users");
+//        } catch (Exception e) {
+//            return ResponseData.internalServerError(e.getMessage());
+//        }
+//
+//    }
 
     @PutMapping("/customer/{username}")
     @Operation(summary = "api to update user by username")
