@@ -19,7 +19,7 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @PostMapping
+    @PostMapping("/admin")
     @Operation(summary = "api to add product")
     public ResponseEntity<Object> addProduct(@Valid @RequestBody Product product) {
 
@@ -57,7 +57,7 @@ public class ProductController {
 
     }
 
-    @PutMapping("/{productCode}")
+    @PutMapping("/admin/{productCode}")
     @Operation(summary = "api to update product by product code")
     public ResponseEntity<Object> updateProduct(@PathVariable String productCode, @Valid @RequestBody Product product) {
 
@@ -72,7 +72,7 @@ public class ProductController {
 
     }
 
-    @DeleteMapping("/{productCode}")
+    @DeleteMapping("/admin/{productCode}")
     @Operation(summary = "api to delete product by product code")
     public ResponseEntity<Object> deleteProduct(@PathVariable String productCode) {
 

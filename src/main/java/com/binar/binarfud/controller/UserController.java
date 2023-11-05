@@ -43,7 +43,7 @@ public class UserController {
 
     }
 
-    @PutMapping("/{username}")
+    @PutMapping("/customer/{username}")
     @Operation(summary = "api to update user by username")
     public ResponseEntity<Object> updateUser(@PathVariable String username, @Valid @RequestBody User user) {
 
@@ -58,7 +58,7 @@ public class UserController {
 
     }
 
-    @DeleteMapping("/{username}")
+    @DeleteMapping("/customer/{username}")
     @Operation(summary = "api to delete user by username")
     public ResponseEntity<Object> deleteUser(@PathVariable String username) {
 

@@ -69,9 +69,9 @@ public class MerchantController {
 
     }
 
-    @PutMapping("/{merchantCode}")
+    @PutMapping("/admin/{merchantCode}")
     @Operation(summary = "api to update merchant by merchant code")
-    public ResponseEntity<Object> updateProduct(@PathVariable String merchantCode, @Valid @RequestBody Merchant merchant) {
+    public ResponseEntity<Object> updateMerchant(@PathVariable String merchantCode, @Valid @RequestBody Merchant merchant) {
 
         try {
             merchantService.updateMerchantByMerchantCode(merchantCode, merchant);
@@ -84,9 +84,9 @@ public class MerchantController {
 
     }
 
-    @DeleteMapping("/{merchantCode}")
+    @DeleteMapping("/admin/{merchantCode}")
     @Operation(summary = "api to delete merchant by merchant code")
-    public ResponseEntity<Object> deleteProduct(@PathVariable String merchantCode) {
+    public ResponseEntity<Object> deleteMerchant(@PathVariable String merchantCode) {
 
         try {
             merchantService.deleteMerchantByMerchantCode(merchantCode);
