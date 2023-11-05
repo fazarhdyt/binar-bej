@@ -67,6 +67,7 @@ public class UserService implements IUserService {
             updateUser.setUsername(user.getUsername() == null ? updateUser.getUsername() : user.getUsername());
             updateUser.setEmail(user.getEmail() == null ? updateUser.getEmail() : user.getEmail());
             updateUser.setPassword(user.getPassword() == null ? updateUser.getPassword() : user.getPassword());
+            updateUser.setRoles(user.getRoles() == null ? updateUser.getRoles() : user.getRoles());
             log.info("update user with username: {} successfully", username);
             return EntityMapper.userToUserDto(userRepository.save(updateUser));
         } catch (Exception e) {
