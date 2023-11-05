@@ -41,7 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/merchant", "/api/merchant/open",
                         "/api/product").permitAll( )
                 .antMatchers("/api/merchant/admin", "/api/product/admin").hasAuthority(ERole.ROLE_MERCHANT.name())
-                .antMatchers("/api/user/customer", "/api/order/**").hasAuthority(ERole.ROLE_CUSTOMER.name())
+                .antMatchers("/api/user/customer", "/api/order/**", "/api/orderdetail").hasAuthority(ERole.ROLE_CUSTOMER.name())
                 .anyRequest()
                 .authenticated();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
