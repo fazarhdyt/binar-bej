@@ -10,8 +10,7 @@ public class EntityMapper {
     static ModelMapper modelMapper = new ModelMapper();
 
     public static MerchantDto merchantToMerchantDto(Merchant merchant) {
-        MerchantDto merchantDto = modelMapper.map(merchant, MerchantDto.class);
-        return merchantDto;
+        return modelMapper.map(merchant, MerchantDto.class);
     }
 
     public static Page<MerchantDto> merchantToMerchantDto(Page<Merchant> page) {
@@ -19,8 +18,7 @@ public class EntityMapper {
     }
 
     public static ProductDto productToProductDto(Product product) {
-        ProductDto productDto = modelMapper.map(product, ProductDto.class);
-        return productDto;
+        return modelMapper.map(product, ProductDto.class);
     }
 
     public static Page<ProductDto> productToProductDto(Page<Product> page) {
@@ -28,12 +26,10 @@ public class EntityMapper {
     }
 
     public static UserDto userToUserDto(User user) {
-        UserDto userDto = modelMapper.map(user, UserDto.class);
-        return userDto;
+        return modelMapper.map(user, UserDto.class);
     }
 
     public static OrderDetailDto orderDetailToOrderDto(OrderDetail orderDetail) {
-        OrderDetailDto orderDetailDto = modelMapper.map(orderDetail, OrderDetailDto.class);
-        return orderDetailDto;
+        return modelMapper.map(orderDetail, OrderDetailDto.class);
     }
 }
