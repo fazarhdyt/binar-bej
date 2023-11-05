@@ -1,158 +1,148 @@
 package com.binar.binarfud.service.impl;
 
+import com.binar.binarfud.dto.UserDto;
+import com.binar.binarfud.exception.ResourceNotFoundException;
 import com.binar.binarfud.model.User;
 import com.binar.binarfud.repository.UserRepository;
-import com.binar.binarfud.service.IUserService;
+import com.binar.binarfud.service.EntityMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class UserServiceTest {
 
-    @Autowired
-    private IUserService userService;
+    @InjectMocks
+    private UserService userService;
 
-    @Autowired
+    @Mock
     private UserRepository userRepository;
 
     @BeforeEach
-    void setUp() {
-        userRepository.deleteAll();
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
     }
 
     @Test
     public void testCreateUser_success() {
+        User user = new User();
+        user.setUsername("testUser");
 
-        User userToSave = new User();
-        userToSave.setUsername("user");
-        userToSave.setEmail("user@example.com");
+        when(userRepository.save(user)).thenReturn(user);
 
-        // Act
-        User createdUser = userService.createUser(userToSave);
+        UserDto result = userService.createUser(user);
 
-        // Assert
-        assertNotNull(createdUser.getId());
-        assertEquals(userToSave.getUsername(), createdUser.getUsername());
-        assertEquals(userToSave.getEmail(), createdUser.getEmail());
+        verify(userRepository, times(1)).save(user);
+        assertEquals(user.getUsername(), result.getUsername());
+        assertNotNull(result);
     }
 
     @Test
-    public void testGetUserByUsername_userExists() {
-
-        String username = "user";
+    public void testGetUserByUsername_success() {
+        String username = "testUser";
         User user = new User();
         user.setUsername(username);
-        userRepository.save(user);
 
-        // Act
-        User result = userService.getUserByUsername(username);
+        when(userRepository.existsByUsername(username)).thenReturn(true);
+        when(userRepository.getUserByUsername(username)).thenReturn(Optional.of(user));
 
-        // Assert
-        assertNotNull(result);
+        UserDto result = userService.getUserByUsername(username);
+
         assertEquals(username, result.getUsername());
     }
 
     @Test
     public void testGetUserByUsername_userNotFound() {
-
         String username = "nonExistentUser";
 
-        // Act and Assert
+        when(userRepository.existsByUsername(username)).thenReturn(false);
+
         assertThrows(RuntimeException.class, () -> userService.getUserByUsername(username));
     }
 
     @Test
-    public void testUpdateUserByUsername_userExists() {
-
-        String username = "user";
+    public void testUpdateUserByUsername_success() {
+        String username = "testUser";
         User existingUser = new User();
         existingUser.setUsername(username);
-        userRepository.save(existingUser);
+
+        when(userRepository.existsByUsername(username)).thenReturn(true);
+        when(userRepository.getUserByUsername(username)).thenReturn(Optional.of(existingUser));
 
         User updatedUser = new User();
-        updatedUser.setUsername(username);
-        updatedUser.setEmail("updated@example.com");
-        updatedUser.setPassword("newPassword");
+        updatedUser.setUsername("updatedUser");
 
-        // Act
-        User result = userService.updateUserByUsername(username, updatedUser);
+        when(userRepository.existsByUsername(username)).thenReturn(true);
+        when(userRepository.getUserByUsername(username)).thenReturn(Optional.of(existingUser));
+        when(userRepository.save(existingUser)).thenReturn(existingUser);
 
-        // Assert
-        assertNotNull(result);
-        assertEquals(username, result.getUsername());
-        assertEquals(updatedUser.getEmail(), result.getEmail());
-        assertEquals(updatedUser.getPassword(), result.getPassword());
+        UserDto result = userService.updateUserByUsername(username, updatedUser);
 
-        // Verify that the user has been updated in the database
-        Optional<User> updatedUserInDb = userRepository.findById(existingUser.getId());
-        assertTrue(updatedUserInDb.isPresent());
-        assertEquals(updatedUser.getEmail(), updatedUserInDb.get().getEmail());
-        assertEquals(updatedUser.getPassword(), updatedUserInDb.get().getPassword());
+        assertEquals(result, EntityMapper.userToUserDto(existingUser));
+        assertEquals(existingUser.getUsername(), "updatedUser");
+        verify(userRepository, times(1)).save(existingUser);
     }
 
     @Test
     public void testUpdateUserByUsername_userNotFound() {
-
         String username = "nonExistentUser";
         User updatedUser = new User();
+        updatedUser.setUsername("updatedUsername");
 
-        // Act and Assert
-        assertThrows(RuntimeException.class, () -> userService.updateUserByUsername(username, updatedUser));
+        when(userRepository.existsByUsername(username)).thenReturn(false);
+
+        assertThrows(ResourceNotFoundException.class, () -> userService.updateUserByUsername(username, updatedUser));
     }
 
     @Test
-    public void testGetUsers_nonEmptyList() {
+    public void testGetUsers_success() {
+        List<User> userList = new ArrayList<>();
+        userList.add(new User());
+        when(userRepository.findAll()).thenReturn(userList);
 
-        User user1 = new User();
-        User user2 = new User();
-        userRepository.saveAll(Arrays.asList(user1, user2));
+        List<UserDto> result = userService.getUsers();
 
-        // Act
-        List<User> result = userService.getUsers();
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(2, result.size());
+        assertEquals(result.size(), userList.size());
+        for (int i = 0; i < userList.size(); i++) {
+            assertEquals(result.get(i), EntityMapper.userToUserDto(userList.get(i)));
+        }
     }
 
     @Test
     public void testGetUsers_emptyList() {
-        // Act and Assert
+        when(userRepository.findAll()).thenReturn(new ArrayList<>());
+
         assertThrows(RuntimeException.class, () -> userService.getUsers());
     }
 
     @Test
-    public void testDeleteUserByUsername_userExists() {
+    public void testDeleteUserByUsername_success() {
+        String username = "testUser";
 
-        String username = "user";
-        User existingUser = new User();
-        existingUser.setUsername(username);
-        userService.createUser(existingUser);
+        when(userRepository.existsByUsername(username)).thenReturn(true);
 
-        // Act
         userService.deleteUserByUsername(username);
 
-        // Assert
-        // Verify that the user has been deleted from the database
-        Optional<User> deletedUserInDb = userRepository.getUserByUsername(username);
-        assertFalse(deletedUserInDb.isPresent());
+        verify(userRepository, times(1)).deleteByUsername(username);
     }
 
     @Test
     public void testDeleteUserByUsername_userNotFound() {
-
         String username = "nonExistentUser";
 
-        // Act and Assert
-        assertThrows(RuntimeException.class, () -> userService.deleteUserByUsername(username));
+        when(userRepository.existsByUsername(username)).thenReturn(false);
+
+        assertThrows(ResourceNotFoundException.class, () -> userService.deleteUserByUsername(username));
     }
 
 }

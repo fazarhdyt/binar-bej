@@ -1,254 +1,252 @@
 package com.binar.binarfud.service.impl;
 
+import com.binar.binarfud.dto.MerchantDto;
+import com.binar.binarfud.exception.ResourceNotFoundException;
 import com.binar.binarfud.model.Merchant;
 import com.binar.binarfud.repository.MerchantRepository;
+import com.binar.binarfud.service.EntityMapper;
 import com.binar.binarfud.service.IMerchantService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class MerchantServiceTest {
 
-    @Autowired
-    private IMerchantService merchantService;
+    @InjectMocks
+    private MerchantService merchantService;
 
-    @Autowired
+    @Mock
     private MerchantRepository merchantRepository;
 
     @BeforeEach
     public void setUp() {
-        // Clear the database before each test
-        merchantRepository.deleteAll();
+        MockitoAnnotations.initMocks(this);
     }
 
     @Test
     public void testCreateMerchant_success() {
+        Merchant merchant = new Merchant();
+        merchant.setMerchantCode("Merchant001");
+        merchant.setMerchantName("testMerchant");
 
-        Merchant merchantToSave = new Merchant();
-        merchantToSave.setMerchantCode("MDR001");
-        merchantToSave.setMerchantName("Madura 1");
-        merchantToSave.setMerchantLocation("Kemiri Muka");
-        merchantToSave.setOpen(true);
+        when(merchantRepository.save(merchant)).thenReturn(merchant);
 
-        // Act
-        Merchant createdMerchant = merchantService.createMerchant(merchantToSave);
+        MerchantDto result = merchantService.createMerchant(merchant);
 
-        // Assert
-        assertNotNull(createdMerchant.getMerchantCode());
-        assertEquals(merchantToSave.getMerchantCode(), createdMerchant.getMerchantCode());
-        assertEquals(merchantToSave.getMerchantName(), createdMerchant.getMerchantName());
-        assertEquals(merchantToSave.getMerchantLocation(), createdMerchant.getMerchantLocation());
-        assertEquals(merchantToSave.isOpen(), createdMerchant.isOpen());
+        verify(merchantRepository, times(1)).save(merchant);
+        assertNotNull(result);
+        assertEquals(result, EntityMapper.merchantToMerchantDto(merchant));
     }
 
     @Test
-    public void testGetMerchantByMerchantCode_merchantExists() {
-
-        String merchantCode = "MDR001";
+    public void testGetMerchantByMerchantCode_success() {
+        String merchantCode = "Merchant001";
         Merchant merchant = new Merchant();
         merchant.setMerchantCode(merchantCode);
-        merchantService.createMerchant(merchant);
 
-        // Act
-        Merchant result = merchantService.getMerchantByMerchantCode(merchantCode);
+        when(merchantRepository.existsByMerchantCode(merchantCode)).thenReturn(true);
+        when(merchantRepository.getMerchantByMerchantCode(merchantCode)).thenReturn(Optional.of(merchant));
 
-        // Assert
+        MerchantDto result = merchantService.getMerchantByMerchantCode(merchantCode);
+
         assertNotNull(result);
+        assertEquals(result, EntityMapper.merchantToMerchantDto(merchant));
         assertEquals(merchantCode, result.getMerchantCode());
     }
 
     @Test
     public void testGetMerchantByMerchantCode_merchantNotFound() {
-
         String merchantCode = "NonExistentMerchant";
 
-        // Act and Assert
-        assertThrows(RuntimeException.class, () -> merchantService.getMerchantByMerchantCode(merchantCode));
+        when(merchantRepository.existsByMerchantCode(merchantCode)).thenReturn(false);
+
+        assertThrows(ResourceNotFoundException.class, () -> merchantService.getMerchantByMerchantCode(merchantCode));
     }
 
     @Test
-    public void testUpdateMerchantByMerchantCode_merchantExists() {
-
-        String merchantCode = "MDR001";
+    public void testUpdateMerchantByMerchantCode_success() {
+        String merchantCode = "Merchant001";
         Merchant existingMerchant = new Merchant();
         existingMerchant.setMerchantCode(merchantCode);
-        merchantService.createMerchant(existingMerchant);
 
         Merchant updatedMerchant = new Merchant();
         updatedMerchant.setMerchantCode(merchantCode);
         updatedMerchant.setMerchantName("Updated Merchant");
         updatedMerchant.setMerchantLocation("Updated Location");
-        updatedMerchant.setOpen(false);
 
-        // Act
-        Merchant result = merchantService.updateMerchantByMerchantCode(merchantCode, updatedMerchant);
+        when(merchantRepository.existsByMerchantCode(merchantCode)).thenReturn(true);
+        when(merchantRepository.getMerchantByMerchantCode(merchantCode)).thenReturn(Optional.of(existingMerchant));
+        when(merchantRepository.save(existingMerchant)).thenReturn(existingMerchant);
 
-        // Assert
+        MerchantDto result = merchantService.updateMerchantByMerchantCode(merchantCode, updatedMerchant);
+
         assertNotNull(result);
         assertEquals(merchantCode, result.getMerchantCode());
-        assertEquals(updatedMerchant.getMerchantName(), result.getMerchantName());
-        assertEquals(updatedMerchant.getMerchantLocation(), result.getMerchantLocation());
-        assertEquals(updatedMerchant.isOpen(), result.isOpen());
+        assertEquals(updatedMerchant.getMerchantName(), "Updated Merchant");
+        assertEquals(updatedMerchant.getMerchantLocation(), "Updated Location");
+        assertEquals(result, EntityMapper.merchantToMerchantDto(existingMerchant));
 
-        // Verify that the merchant has been updated in the database
-        Optional<Merchant> updatedMerchantInDb = merchantRepository.getMerchantByMerchantCode(merchantCode);
-        assertTrue(updatedMerchantInDb.isPresent());
-        assertEquals(updatedMerchant.getMerchantName(), updatedMerchantInDb.get().getMerchantName());
-        assertEquals(updatedMerchant.getMerchantLocation(), updatedMerchantInDb.get().getMerchantLocation());
-        assertEquals(updatedMerchant.isOpen(), updatedMerchantInDb.get().isOpen());
     }
 
     @Test
     public void testUpdateMerchantByMerchantCode_merchantNotFound() {
-
         String merchantCode = "NonExistentMerchant";
         Merchant updatedMerchant = new Merchant();
 
-        // Act and Assert
-        assertThrows(RuntimeException.class, () -> merchantService.updateMerchantByMerchantCode(merchantCode, updatedMerchant));
+        when(merchantRepository.existsByMerchantCode(merchantCode)).thenReturn(false);
+
+        assertThrows(ResourceNotFoundException.class, () -> merchantService.updateMerchantByMerchantCode(merchantCode, updatedMerchant));
     }
 
     @Test
-    public void testGetOpenMerchants_merchantsExist() {
+    public void testGetOpenMerchants_success() {
+        List<Merchant> merchantList;
 
         Merchant openMerchant1 = new Merchant();
-        openMerchant1.setMerchantCode("MDR001");
-        openMerchant1.setMerchantName("Madura 1");
+        openMerchant1.setMerchantCode("Merchant001");
+        openMerchant1.setMerchantName("testMerchant1");
         openMerchant1.setOpen(true);
 
         Merchant openMerchant2 = new Merchant();
-        openMerchant2.setMerchantCode("MDR002");
-        openMerchant2.setMerchantName("Madura 2");
+        openMerchant2.setMerchantCode("Merchant002");
+        openMerchant2.setMerchantName("testMerchant2");
         openMerchant2.setOpen(true);
 
         Merchant closedMerchant = new Merchant();
-        closedMerchant.setMerchantCode("WRC001");
-        closedMerchant.setMerchantName("Warung Ucok");
+        closedMerchant.setMerchantCode("Merchant003");
+        closedMerchant.setMerchantName("testMerchant3");
         closedMerchant.setOpen(false);
 
-        merchantRepository.saveAll(Arrays.asList(openMerchant1, openMerchant2, closedMerchant));
+        merchantList = Arrays.asList(openMerchant1, openMerchant2);
 
-        // Act
-        List<Merchant> result = merchantService.getOpenMerchants();
+        when(merchantRepository.findAll()).thenReturn(merchantList);
+        when(merchantRepository.getOpenMerchant()).thenReturn(merchantList);
 
-        // Assert
+        List<MerchantDto> result = merchantService.getOpenMerchants();
+
         assertNotNull(result);
         assertEquals(2, result.size());
-        assertTrue(result.stream().allMatch(Merchant::isOpen));
+        assertTrue(result.stream().allMatch(MerchantDto::isOpen));
     }
 
     @Test
     public void testGetOpenMerchants_noOpenMerchants() {
+        List<Merchant> merchantList;
 
         Merchant closedMerchant1 = new Merchant();
-        closedMerchant1.setMerchantCode("WRC001");
-        closedMerchant1.setMerchantName("Warung Ucok 1");
+        closedMerchant1.setMerchantCode("Merchant001");
+        closedMerchant1.setMerchantName("testMerchant1");
         closedMerchant1.setOpen(false);
 
         Merchant closedMerchant2 = new Merchant();
-        closedMerchant2.setMerchantCode("WRC002");
-        closedMerchant2.setMerchantName("Warung Ucok 2");
+        closedMerchant2.setMerchantCode("Merchant002");
+        closedMerchant2.setMerchantName("testMerchant2");
         closedMerchant2.setOpen(false);
 
-        merchantRepository.saveAll(Arrays.asList(closedMerchant1, closedMerchant2));
+        merchantList = Arrays.asList(closedMerchant1, closedMerchant2);
 
-        // Act
-        List<Merchant> result = merchantService.getOpenMerchants();
+        when(merchantRepository.findAll()).thenReturn(merchantList);
+        when(merchantRepository.getOpenMerchant()).thenReturn(new ArrayList<>());
 
-        // Assert
-        assertNotNull(result);
+        List<MerchantDto> result = merchantService.getOpenMerchants();
+
         assertTrue(result.isEmpty());
     }
 
     @Test
     public void testGetOpenMerchants_noMerchants() {
-        // Act and Assert
+        when(merchantRepository.findAll()).thenReturn(new ArrayList<>());
         assertThrows(RuntimeException.class, () -> merchantService.getOpenMerchants());
     }
 
     @Test
-    public void testGetMerchants_nonEmptyList() {
+    public void testGetMerchants_success() {
+        List<Merchant> merchantList;
 
         Merchant merchant1 = new Merchant();
+        merchant1.setMerchantCode("Merchant001");
         Merchant merchant2 = new Merchant();
-        merchant1.setMerchantCode("MDR001");
-        merchant2.setMerchantCode("MDR002");
-        merchantService.createMerchant(merchant1);
-        merchantService.createMerchant(merchant2);
+        merchant2.setMerchantCode("Merchant002");
 
-        // Act
-        List<Merchant> result = merchantService.getMerchants();
+        merchantList = Arrays.asList(merchant1, merchant2);
 
-        // Assert
+        when(merchantRepository.findAll()).thenReturn(merchantList);
+
+        List<MerchantDto> result = merchantService.getMerchants();
+
         assertNotNull(result);
         assertEquals(2, result.size());
+        for (int i = 0; i < merchantList.size(); i++) {
+            assertEquals(result.get(i), EntityMapper.merchantToMerchantDto(merchantList.get(i)));
+        }
     }
 
     @Test
     public void testGetMerchants_emptyList() {
-        // Act and Assert
+        when(merchantRepository.findAll()).thenReturn(new ArrayList<>());
         assertThrows(RuntimeException.class, () -> merchantService.getMerchants());
     }
 
     @Test
     public void testGetMerchantsWithPagination_success() {
-        // Act and Assert
+        List<Merchant> merchantList;
+        int page = 0;
+
         Merchant merchant1 = new Merchant();
-        merchant1.setMerchantCode("MDR1");
-        merchant1.setMerchantName("Madura 1");
+        merchant1.setMerchantCode("Merchant001");
+        merchant1.setMerchantName("testMerchant1");
 
         Merchant merchant2 = new Merchant();
-        merchant2.setMerchantCode("MDR2");
-        merchant2.setMerchantName("Madura 2");
+        merchant2.setMerchantCode("Merchant2");
+        merchant2.setMerchantName("testMerchant2");
 
-        Merchant product3 = new Merchant();
-        product3.setMerchantCode("MDR3");
-        product3.setMerchantName("Madura 3");
+        Merchant merchant3 = new Merchant();
+        merchant3.setMerchantCode("Merchant3");
+        merchant3.setMerchantName("testMerchant3");
 
-        merchantRepository.saveAll(Arrays.asList(merchant1, merchant2, product3));
+        merchantList = Arrays.asList(merchant1, merchant2, merchant3);
 
-        // Act
-        Page<Merchant> page = merchantService.getMerchantsWithPagination(0);
+        Page<Merchant> merchantPage = new PageImpl<>(merchantList);
+        when(merchantRepository.getMerchantWithPagination(PageRequest.of(page, 3))).thenReturn(merchantPage);
 
-        // Assert
-        assertNotNull(page);
-        assertEquals(3, page.getContent().size());
+        Page<MerchantDto> result = merchantService.getMerchantsWithPagination(page);
 
-        Page<Merchant> page2 = merchantService.getMerchantsWithPagination(1);
-        assertEquals(0, page2.getContent().size());
+        assertNotNull(result);
+        assertEquals(3, result.getContent().size());
+        assertEquals(result.getContent().get(1), EntityMapper.merchantToMerchantDto(merchantList.get(1)));
     }
 
     @Test
-    public void testDeleteMerchantByMerchantCode_merchantExists() {
+    public void testDeleteMerchantByMerchantCode_success() {
+        String merchantCode = "Merchant001";
 
-        String merchantCode = "MDR001";
-        Merchant existingMerchant = new Merchant();
-        existingMerchant.setMerchantCode(merchantCode);
-        merchantService.createMerchant(existingMerchant);
+        when(merchantRepository.existsByMerchantCode(merchantCode)).thenReturn(true);
 
-        // Act
         merchantService.deleteMerchantByMerchantCode(merchantCode);
 
-        // Assert
-        Optional<Merchant> deletedMerchant = merchantRepository.getMerchantByMerchantCode(merchantCode);
-        assertFalse(deletedMerchant.isPresent());
+        verify(merchantRepository, times(1)).deleteByMerchantCode(merchantCode);
     }
 
     @Test
     public void testDeleteMerchantByMerchantCode_merchantNotFound() {
-
         String merchantCode = "NonExistentMerchant";
 
-        // Act and Assert
-        assertThrows(RuntimeException.class, () -> merchantService.deleteMerchantByMerchantCode(merchantCode));
+        assertThrows(ResourceNotFoundException.class, () -> merchantService.deleteMerchantByMerchantCode(merchantCode));
     }
 }

@@ -1,147 +1,130 @@
 package com.binar.binarfud.service.impl;
 
+import com.binar.binarfud.exception.ResourceNotFoundException;
 import com.binar.binarfud.model.Order;
 import com.binar.binarfud.model.OrderDetail;
 import com.binar.binarfud.model.Product;
 import com.binar.binarfud.model.User;
-import com.binar.binarfud.repository.*;
+import com.binar.binarfud.repository.OrderDetailRepository;
+import com.binar.binarfud.repository.OrderRepository;
+import com.binar.binarfud.repository.ProductRepository;
+import com.binar.binarfud.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class OrderServiceTest {
 
-    @Autowired
-    private ProductRepository productRepository;
+    @InjectMocks
+    private OrderService orderService;
 
-    @Autowired
+    @Mock
     private OrderRepository orderRepository;
 
-    @Autowired
+    @Mock
+    private ProductRepository productRepository;
+
+    @Mock
     private OrderDetailRepository orderDetailRepository;
 
-    @Autowired
+    @Mock
     private UserRepository userRepository;
-
-    @Autowired
-    private MerchantRepository merchantRepository;
-
-    @Autowired
-    private OrderService orderService;
 
     @BeforeEach
     public void setUp() {
-        // Clear the database before each test
-        orderDetailRepository.deleteAll();
-        productRepository.deleteAll();
-        orderRepository.deleteAll();
+        MockitoAnnotations.initMocks(this);
     }
 
     @Test
     public void testOrderProducts_success() {
+        User user = new User();
+        user.setUsername("testUser");
 
-        User user = User.builder()
-                .username("user")
-                .email("user@gmail.com")
-                .password("password")
-                .build();
+        Order order = new Order();
+        order.setUser(user);
 
-        userRepository.save(user);
+        when(userRepository.getUserByUsername(user.getUsername())).thenReturn(Optional.of(user));
 
         Product product = new Product();
-        product.setProductCode("KSUSU");
-        product.setProductName("Ultra Milk");
-        product.setPrice(5000);
-
-        productRepository.save(product);
+        product.setProductCode("ProductCode001");
+        product.setPrice(10000d);
 
         OrderDetail orderDetail = new OrderDetail();
         orderDetail.setProduct(product);
         orderDetail.setQuantity(2);
 
-        List<OrderDetail> orderDetails = new ArrayList<>();
-        orderDetails.add(orderDetail);
+        order.setOrderDetails(Collections.singletonList(orderDetail));
 
-        Order order = new Order();
-        order.setOrderTime(new Date());
-        order.setDestinationAddress("Kelapa Dua");
-        order.setUser(user);
-        order.setCompleted(false);
-        order.setOrderDetails(orderDetails);
+        when(orderRepository.save(order)).thenReturn(order);
+        when(orderDetailRepository.save(orderDetail)).thenReturn(orderDetail);
+        when(productRepository.getProductByProductCode(product.getProductCode())).thenReturn(Optional.of(product));
 
-        // Act
         orderService.orderProducts(order);
 
-        // Assert
-        assertNotNull(order.getId());
-
-        List<Order> ordersInDatabase = orderRepository.findAll();
-        assertEquals(1, ordersInDatabase.size());
-
-        List<OrderDetail> orderDetailsInDatabase = orderDetailRepository.findAll();
-        assertEquals(1, orderDetailsInDatabase.size());
-
-        OrderDetail orderDetailInDatabase = orderDetailsInDatabase.get(0);
-        assertEquals(order.getId(), orderDetailInDatabase.getOrder().getId());
-        assertEquals(product.getProductCode(), orderDetailInDatabase.getProduct().getProductCode());
-        assertEquals(2, orderDetailInDatabase.getQuantity());
-        assertEquals(10000, orderDetailInDatabase.getTotalPrice());
+        verify(orderDetailRepository, times(1)).save(orderDetail);
+        verify(orderRepository, times(1)).save(order);
     }
 
     @Test
-    public void testOrderProducts_userNotRegister() {
-
-        Product product = new Product();
-        product.setProductCode("KSUSU");
-        product.setProductName("Ultra Milk");
-        product.setPrice(10000);
-
-        productRepository.save(product);
-
+    public void testOrderProducts_userNotFound() {
         Order order = new Order();
-        order.setOrderTime(new Date());
-        order.setDestinationAddress("Sukmajaya");
-        order.setCompleted(false);
+        order.setUser(null);
 
-        OrderDetail orderDetail = new OrderDetail();
-        orderDetail.setProduct(product);
-        orderDetail.setQuantity(2);
-
-        List<OrderDetail> orderDetails = new ArrayList<>();
-        orderDetails.add(orderDetail);
-        order.setOrderDetails(orderDetails);
-
-        // Act & Assert
         assertThrows(NullPointerException.class, () -> orderService.orderProducts(order));
     }
 
     @Test
-    public void testGetOrders_nonEmptyList() {
+    public void testResolveOrder() {
+        String orderId = "testOrderId";
+        Order order = new Order();
+        order.setId(orderId);
+        order.setCompleted(false);
 
-        Order order1 = new Order();
-        Order order2 = new Order();
-        orderRepository.saveAll(Arrays.asList(order1, order2));
+        when(orderRepository.existsById(orderId)).thenReturn(true);
+        when(orderRepository.getById(orderId)).thenReturn(order);
 
-        // Act
-        List<Order> result = orderService.getOrders();
+        Product product = new Product();
+        product.setStock(10);
 
-        // Assert
-        assertNotNull(result);
-        assertEquals(2, result.size());
+        OrderDetail orderDetail = new OrderDetail();
+        orderDetail.setProduct(product);
+        orderDetail.setQuantity(2);
+
+        order.setOrderDetails(Collections.singletonList(orderDetail));
+
+        orderService.resolveOrder(orderId);
+
+        verify(orderRepository, times(1)).save(order);
+        verify(productRepository, times(1)).save(product);
     }
 
     @Test
-    public void testGetOrders_emptyList() {
-        // Act and Assert
-        assertThrows(RuntimeException.class, () -> orderService.getOrders());
+    public void testResolveOrderNotFound() {
+        String orderId = "nonExistentOrderId";
+        when(orderRepository.existsById(orderId)).thenReturn(false);
+
+        assertThrows(ResourceNotFoundException.class, () -> orderService.resolveOrder(orderId));
+    }
+
+    @Test
+    public void testResolveOrderAlreadyResolved() {
+        String orderId = "testOrderId";
+        Order order = new Order();
+        order.setId(orderId);
+        order.setCompleted(true);
+
+        when(orderRepository.existsById(orderId)).thenReturn(true);
+        when(orderRepository.getById(orderId)).thenReturn(order);
+
+        assertThrows(IllegalStateException.class, () -> orderService.resolveOrder(orderId));
     }
 }

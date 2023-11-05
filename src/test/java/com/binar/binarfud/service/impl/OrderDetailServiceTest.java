@@ -1,104 +1,72 @@
 package com.binar.binarfud.service.impl;
 
-import com.binar.binarfud.model.*;
-import com.binar.binarfud.repository.OrderDetailRepository;
+import com.binar.binarfud.dto.OrderDetailDto;
+import com.binar.binarfud.exception.ResourceNotFoundException;
+import com.binar.binarfud.model.Order;
+import com.binar.binarfud.model.OrderDetail;
+import com.binar.binarfud.model.Product;
 import com.binar.binarfud.repository.OrderRepository;
-import com.binar.binarfud.repository.ProductRepository;
-import com.binar.binarfud.repository.UserRepository;
+import com.binar.binarfud.service.EntityMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class OrderDetailServiceTest {
 
-    @Autowired
+    @InjectMocks
     private OrderDetailService orderDetailService;
 
-    @Autowired
-    private OrderDetailRepository orderDetailRepository;
-
-    @Autowired
+    @Mock
     private OrderRepository orderRepository;
-
-    @Autowired
-    private OrderService orderService;
-
-    @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @BeforeEach
     public void setUp() {
-        // Clear the database before each test
-        orderDetailRepository.deleteAll();
-        productRepository.deleteAll();
-        orderRepository.deleteAll();
+        MockitoAnnotations.initMocks(this);
     }
 
     @Test
-    public void testGetOrderDetail_NonEmptyList() {
+    public void testGetOrderDetail_success() {
+        String orderId = "testOrderId";
+        Order order = new Order();
+        order.setId(orderId);
 
-        User user = User.builder()
-                .username("user")
-                .email("user@gmail.com")
-                .password("password")
-                .build();
-
-        userRepository.save(user);
+        when(orderRepository.existsById(orderId)).thenReturn(true);
+        when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
 
         Product product = new Product();
-        product.setProductCode("KSUSU");
-        product.setProductName("Ultra Milk");
-        product.setPrice(5000);
-        productRepository.save(product);
-
-        Product product2 = new Product();
-        product2.setProductCode("YKLT");
-        product2.setProductName("Yakult");
-        product2.setPrice(2000);
-        productRepository.save(product2);
+        product.setProductCode("ProductCode001");
+        product.setPrice(10000d);
 
         OrderDetail orderDetail = new OrderDetail();
         orderDetail.setProduct(product);
-        orderDetail.setQuantity(2);
 
-        OrderDetail orderDetail2 = new OrderDetail();
-        orderDetail2.setProduct(product2);
-        orderDetail2.setQuantity(4);
+        order.setOrderDetails(Collections.singletonList(orderDetail));
 
-        List<OrderDetail> orderDetails = new ArrayList<>();
-        orderDetails = Arrays.asList(orderDetail, orderDetail2);
+        List<OrderDetailDto> result = orderDetailService.getOrderDetail(orderId);
 
-        Order order = new Order();
-        order.setOrderTime(new Date());
-        order.setDestinationAddress("Kelapa Dua");
-        order.setUser(user);
-        order.setCompleted(false);
-        order.setOrderDetails(orderDetails);
+        verify(orderRepository, times(1)).findById(orderId);
 
-        // Act
-        orderService.orderProducts(order);
-        List<OrderDetail> result = orderDetailService.getOrderDetail();
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(2, result.size());
+        assertEquals(result.size(), 1);
+        assertEquals(result.get(0), EntityMapper.orderDetailToOrderDto(orderDetail));
     }
 
     @Test
-    public void testGetOrderDetail_EmptyList() {
-        // Act and Assert
-        assertThrows(RuntimeException.class, () -> orderDetailService.getOrderDetail());
+    public void testGetOrderDetailNotFound() {
+        String orderId = "nonExistentOrderId";
+        when(orderRepository.existsById(orderId)).thenReturn(false);
+
+        assertThrows(ResourceNotFoundException.class, () -> orderDetailService.getOrderDetail(orderId));
     }
 }
