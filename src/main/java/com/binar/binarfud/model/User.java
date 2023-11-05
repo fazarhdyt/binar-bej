@@ -10,7 +10,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -22,6 +24,12 @@ import java.util.List;
         @UniqueConstraint(columnNames = "email")
 })
 public class User implements Serializable {
+
+    public User(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -43,4 +51,8 @@ public class User implements Serializable {
 
     @OneToMany(mappedBy = "user")
     private List<Order> orders;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 }
