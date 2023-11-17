@@ -7,4 +7,8 @@ import java.util.List;
 public interface IOrderDetailService {
 
     List<OrderDetailDto> getOrderDetail(String orderId);
+
+    void deleteOldOrderDetails();
+
+    void scheduledDeleteOldOrderDetails();
 }
