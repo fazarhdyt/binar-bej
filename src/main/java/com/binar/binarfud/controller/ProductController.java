@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/product")
@@ -84,6 +86,19 @@ public class ProductController {
         } catch (Exception e) {
             return ResponseData.internalServerError(e.getMessage());
         }
+    }
+
+    @PostMapping("/admin/async")
+    @Operation(summary = "api to add product async")
+    public ResponseEntity<CompletableFuture<Product>> createProduct(@RequestBody Product product) {
+        CompletableFuture<Product> result = productService.createProduct(product);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
+
+    @GetMapping("/async")
+    @Operation(summary = "api to get products async")
+    public ResponseEntity getAllProduct() {
+        return ResponseEntity.ok(productService.getAllProduct());
     }
 
 }

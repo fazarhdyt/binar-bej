@@ -5,6 +5,7 @@ import com.binar.binarfud.model.Product;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface IProductService {
 
@@ -19,4 +20,8 @@ public interface IProductService {
     Page<ProductDto> getProductsWithPagination(int page);
 
     void deleteProductByProductCode(String productCode);
+
+    CompletableFuture<Product> createProduct(Product product);
+
+    CompletableFuture<List<Product>> getAllProduct();
 }
