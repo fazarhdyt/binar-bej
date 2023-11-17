@@ -9,8 +9,8 @@ import com.binar.binarfud.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -24,6 +24,7 @@ public class UserService implements IUserService {
     private UserRepository userRepository;
 
     @Override
+    @Transactional
     public UserDto createUser(User user) {
         try {
             log.info("trying to create user");
@@ -40,6 +41,7 @@ public class UserService implements IUserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserDto getUserByUsername(String username) {
         try {
             log.info("trying to get user with username: {}", username);
@@ -56,6 +58,7 @@ public class UserService implements IUserService {
     }
 
     @Override
+    @Transactional
     public UserDto updateUserByUsername(String username, User user) {
         try {
             log.info("trying to update user with username: {}", username);
@@ -77,6 +80,7 @@ public class UserService implements IUserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserDto> getUsers() {
         try {
             log.info("trying to get all users");

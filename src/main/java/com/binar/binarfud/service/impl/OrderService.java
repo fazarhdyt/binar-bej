@@ -13,6 +13,7 @@ import com.binar.binarfud.service.IOrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -33,6 +34,7 @@ public class OrderService implements IOrderService {
     private UserRepository userRepository;
 
     @Override
+    @Transactional
     public void orderProducts(Order orders) {
         try {
             log.info("trying to order products");
@@ -63,6 +65,7 @@ public class OrderService implements IOrderService {
     }
 
     @Override
+    @Transactional
     public void resolveOrder(String id) {
         try {
             log.info("trying to resolve order with order id: {}", id);

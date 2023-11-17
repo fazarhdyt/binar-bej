@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +24,7 @@ public class MerchantService implements IMerchantService {
     private MerchantRepository merchantRepository;
 
     @Override
+    @Transactional
     public MerchantDto createMerchant(Merchant merchant) {
         try {
             log.info("trying to create merchant");
@@ -37,6 +38,7 @@ public class MerchantService implements IMerchantService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public MerchantDto getMerchantByMerchantCode(String merchantCode) {
         try {
             log.info("trying to get merchant with merchant code: {}", merchantCode);
@@ -53,6 +55,7 @@ public class MerchantService implements IMerchantService {
     }
 
     @Override
+    @Transactional
     public MerchantDto updateMerchantByMerchantCode(String merchantCode, Merchant merchant) {
         try {
             log.info("trying to update merchant with merchant code: {}", merchantCode);
@@ -73,6 +76,7 @@ public class MerchantService implements IMerchantService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<MerchantDto> getMerchants() {
         try {
             log.info("trying to get all merchant");
@@ -94,6 +98,7 @@ public class MerchantService implements IMerchantService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<MerchantDto> getOpenMerchants() {
         try {
             log.info("trying to get open merchants");
@@ -115,6 +120,7 @@ public class MerchantService implements IMerchantService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<MerchantDto> getMerchantsWithPagination(int page) {
         try {
             log.info("trying to get merchants with pagination");

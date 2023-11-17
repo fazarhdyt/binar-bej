@@ -12,11 +12,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -30,6 +32,7 @@ public class ProductService implements IProductService {
     private MerchantRepository merchantRepository;
 
     @Override
+    @Transactional
     public ProductDto createProduct(Product product, String merchantCode) {
         try {
             log.info("trying to create product");
@@ -48,6 +51,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ProductDto getProductByProductCode(String productCode) {
         try {
             log.info("trying to get product with product code: {}", productCode);
@@ -64,6 +68,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    @Transactional
     public ProductDto updateProductByProductCode(String productCode, Product product) {
         try {
             log.info("trying to update product with product code: {}", productCode);
@@ -85,6 +90,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ProductDto> getProducts() {
         try {
             log.info("trying to get all products");
@@ -108,6 +114,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<ProductDto> getProductsWithPagination(int page) {
         try {
             log.info("trying to get products with pagination");
@@ -135,5 +142,17 @@ public class ProductService implements IProductService {
             log.error("delete product with product code: {} failed\n", productCode + e.getMessage());
             throw e;
         }
+    }
+
+    @Override
+    @Async
+    public CompletableFuture<Product> createProduct(Product product) {
+        return CompletableFuture.supplyAsync(() -> productRepository.save(product));
+    }
+
+    @Override
+    @Async
+    public CompletableFuture<List<Product>> getAllProduct() {
+        return CompletableFuture.supplyAsync(() -> productRepository.findAll());
     }
 }
