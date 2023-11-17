@@ -39,8 +39,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/auth/**", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**",
                         "/api/merchant", "/api/merchant/open",
-                        "/api/product").permitAll( )
-                .antMatchers("/api/merchant/admin", "/api/product/admin").hasAuthority(ERole.ROLE_MERCHANT.name())
+                        "/api/product", "/api/product/async").permitAll( )
+                .antMatchers("/api/merchant/admin", "/api/product/admin","/api/product/admin/async").hasAuthority(ERole.ROLE_MERCHANT.name())
                 .antMatchers("/api/user/customer", "/api/order/**").hasAuthority(ERole.ROLE_CUSTOMER.name())
                 .anyRequest()
                 .authenticated();
